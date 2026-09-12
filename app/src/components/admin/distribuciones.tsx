@@ -4,6 +4,7 @@ import { fidetok } from "@fidetok/client";
 import { findAssociatedTokenPda, TOKEN_PROGRAM_ADDRESS } from "@solana-program/token";
 import { TOKEN_2022_PROGRAM_ADDRESS } from "@solana-program/token-2022";
 import { address, type Address } from "@solana/kit";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { useFideTok } from "@/components/providers";
@@ -14,7 +15,7 @@ import type { FideicomisoPublico } from "@/lib/fideicomisos";
 import { formatArs, formatInt, formatUsdc, shortAddress } from "@/lib/format";
 import { useLoader } from "@/lib/hooks";
 import { describeError } from "@/lib/solana/errors";
-import { fetchFideicomisoState, fetchHolders } from "@/lib/solana/onchain";
+import { fetchFideicomisoState, fetchHolders, fetchTokenBalance } from "@/lib/solana/onchain";
 import { findDistributionPda } from "@/lib/solana/pdas";
 import { sendTx } from "@/lib/solana/tx";
 
@@ -109,7 +110,9 @@ function NuevaDistribucion({ mint, onDone }: { mint: Address; onDone: () => Prom
         return ata === h.address ? h : null;
       }),
     );
-    return { state, holders: valid.filter((h): h is NonNullable<typeof h> => h !== null) };
+    // El admin financia la distribucion de su propia cuenta: hace falta saber si le alcanza.
+    const saldoAdmin = await fetchTokenBalance(client.rpc, client.payer.address, usdcMint(), TOKEN_PROGRAM_ADDRESS);
+    return { state, saldoAdmin, holders: valid.filter((h): h is NonNullable<typeof h> => h !== null) };
   }, [client, mint]);
 
   const tipoCambio = Number(tc || fx.data?.venta || 0);
@@ -245,6 +248,8 @@ function NuevaDistribucion({ mint, onDone }: { mint: Address; onDone: () => Prom
   }
 
   const state = data.data?.state;
+  const saldoAdmin = data.data?.saldoAdmin ?? 0n;
+  const faltante = totalUsdc > saldoAdmin ? totalUsdc - saldoAdmin : 0n;
   return (
     <Card className="flex flex-col gap-5">
       <div className="flex items-center justify-between">
@@ -318,7 +323,20 @@ function NuevaDistribucion({ mint, onDone }: { mint: Address; onDone: () => Prom
           ))}
         </ol>
       )}
-      <Button onClick={ejecutar} loading={busy} disabled={preview.length === 0 || (!state?.transfersLocked && totalUsdc <= 0n)}>
+      {faltante > 0n && !state?.transfersLocked && (
+        <Notice tone="warning">
+          Te faltan {formatUsdc(faltante)} para cubrir esta distribución: tenés {formatUsdc(saldoAdmin)} y hacen falta{" "}
+          {formatUsdc(totalUsdc)}.{" "}
+          <Link className="font-semibold underline" href="/portafolio">
+            Pedir fondos en Cartera
+          </Link>
+        </Notice>
+      )}
+      <Button
+        onClick={ejecutar}
+        loading={busy}
+        disabled={preview.length === 0 || (!state?.transfersLocked && (totalUsdc <= 0n || faltante > 0n))}
+      >
         {state?.transfersLocked ? "Pagar pendientes y cerrar" : "Ejecutar distribución"}
       </Button>
     </Card>

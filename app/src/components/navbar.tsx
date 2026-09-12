@@ -27,7 +27,7 @@ const ADMINISTRACION: Item = { href: "/admin", label: "Administración", Icono: 
 const NAV: Record<Rol | "visitante", Item[]> = {
   inversor: [MERCADO, CARTERA, HABILITACION],
   fiduciante: [MERCADO, EMISIONES],
-  administrador: [ADMINISTRACION, MERCADO],
+  administrador: [ADMINISTRACION, MERCADO, CARTERA],
   visitante: [MERCADO, HABILITACION, EMISIONES],
 };
 
