@@ -7,16 +7,14 @@ import {
 } from "@solana-program/token-2022";
 import type {
   Address,
-  Base58EncodedBytes,
   GetAccountInfoApi,
   GetMultipleAccountsApi,
-  GetProgramAccountsApi,
   Rpc,
 } from "@solana/kit";
 
 import { PYTH_USDC_USD } from "../config";
 
-export type ReadRpc = Rpc<GetAccountInfoApi & GetMultipleAccountsApi & GetProgramAccountsApi>;
+export type ReadRpc = Rpc<GetAccountInfoApi & GetMultipleAccountsApi>;
 
 export function base64ToBytes(value: string) {
   return Uint8Array.from(atob(value), (char) => char.charCodeAt(0));
@@ -48,18 +46,37 @@ export async function fetchPoolState(rpc: ReadRpc, mint: Address, usdcMint: Addr
 }
 
 /** Tenedores de certificados de un mint (para calcular el reparto de renta). */
-export async function fetchHolders(rpc: ReadRpc, mint: Address) {
-  const accounts = await rpc
-    .getProgramAccounts(TOKEN_2022_PROGRAM_ADDRESS, {
-      encoding: "base64",
-      filters: [{ memcmp: { offset: 0n, bytes: mint as unknown as Base58EncodedBytes, encoding: "base58" } }],
-    })
-    .send();
+/**
+ * Tenedores de certificados de un mint.
+ *
+ * No se puede barrer con `getProgramAccounts` sobre Token-2022: los RPC excluyen ese
+ * programa de los indices secundarios y responden -32010. Se resuelve al reves, desde
+ * los candidatos: el transfer hook exige whitelist en cada transferencia, asi que
+ * ningun tenedor puede estar fuera de `owners`. Se derivan sus ATAs y se leen de a
+ * lotes con `getMultipleAccounts`, que si esta indexado.
+ */
+export async function fetchHolders(rpc: ReadRpc, mint: Address, owners: Address[]) {
+  if (owners.length === 0) return [];
+  const atas = await Promise.all(
+    owners.map(async (owner) => {
+      const [ata] = await findAssociatedTokenPda({ owner, mint, tokenProgram: TOKEN_2022_PROGRAM_ADDRESS });
+      return ata;
+    }),
+  );
+
   const decoder = getTokenDecoder();
-  return accounts
-    .map(({ pubkey, account }) => ({ address: pubkey, ...decoder.decode(base64ToBytes(account.data[0])) }))
-    .filter((token) => token.amount > 0n)
-    .map((token) => ({ address: token.address, owner: token.owner, amount: token.amount }));
+  const holders: Array<{ address: Address; owner: Address; amount: bigint }> = [];
+  // getMultipleAccounts admite 100 cuentas por llamada.
+  for (let i = 0; i < atas.length; i += 100) {
+    const lote = atas.slice(i, i + 100);
+    const { value } = await rpc.getMultipleAccounts(lote, { encoding: "base64" }).send();
+    value.forEach((account, j) => {
+      if (!account) return;
+      const token = decoder.decode(base64ToBytes(account.data[0]));
+      if (token.amount > 0n) holders.push({ address: lote[j], owner: token.owner, amount: token.amount });
+    });
+  }
+  return holders;
 }
 
 /**

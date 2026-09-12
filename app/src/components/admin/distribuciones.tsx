@@ -96,7 +96,12 @@ function NuevaDistribucion({ mint, onDone }: { mint: Address; onDone: () => Prom
 
   const fx = useLoader(() => api<{ venta: number; fecha: string; fuente: string }>("/api/fx"), []);
   const data = useLoader(async () => {
-    const [state, holders] = await Promise.all([fetchFideicomisoState(client.rpc, mint), fetchHolders(client.rpc, mint)]);
+    const { wallets } = await api<{ wallets: string[] }>("/api/admin/whitelist");
+    const candidatos = wallets.map((wallet) => address(wallet));
+    const [state, holders] = await Promise.all([
+      fetchFideicomisoState(client.rpc, mint),
+      fetchHolders(client.rpc, mint, candidatos),
+    ]);
     // Solo cuentas asociadas (ATA): es la cuenta que valida pay_dividend.
     const valid = await Promise.all(
       holders.map(async (h) => {
