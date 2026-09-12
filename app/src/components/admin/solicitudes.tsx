@@ -51,8 +51,8 @@ const ASSET_ENUM: Record<AssetKey, fidetok.AssetType> = {
 export function SolicitudesAdmin() {
   const { data, error, reload } = useLoader(() => api<SolicitudAdmin[]>("/api/admin/solicitudes"), []);
   if (error) return <Notice tone="danger">{error}</Notice>;
-  if (!data) return <div className="h-40 animate-pulse rounded-2xl bg-white/5" />;
-  if (data.length === 0) return <Card className="text-sm text-slate-400">No hay solicitudes de tokenización.</Card>;
+  if (!data) return <div className="h-40 animate-pulse rounded-card bg-surface" />;
+  if (data.length === 0) return <Card className="text-sm text-mute">No hay solicitudes de tokenización.</Card>;
   return (
     <div className="flex flex-col gap-4">
       {data.map((s) => (
@@ -133,10 +133,10 @@ function SolicitudRow({ solicitud: s, onChange }: { solicitud: SolicitudAdmin; o
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-white">{s.nombre}</h3>
-            <span className="font-mono text-xs text-slate-500">{s.simbolo}</span>
+            <h3 className="font-display text-[22px] uppercase tracking-[-0.02em]">{s.nombre}</h3>
+            <span className="text-xs text-dim">{s.simbolo}</span>
           </div>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-dim">
             {ASSET_LABELS[s.asset_type]} · originador {shortAddress(s.originador_wallet)}
           </p>
         </div>
@@ -150,15 +150,15 @@ function SolicitudRow({ solicitud: s, onChange }: { solicitud: SolicitudAdmin; o
       </div>
       <div className="flex flex-col gap-1 text-xs">
         {s.contrato_url ? (
-          <a className="font-semibold text-emerald-300 hover:underline" href={s.contrato_url} target="_blank" rel="noreferrer">
+          <a className="font-semibold text-acid hover:underline" href={s.contrato_url} target="_blank" rel="noreferrer">
             Ver contrato firmado (PDF) ↗
           </a>
         ) : (
-          <span className="text-rose-300">Contrato no disponible</span>
+          <span className="text-down">Contrato no disponible</span>
         )}
-        <span className="break-all font-mono text-slate-500">sha256 {s.contrato_sha256}</span>
+        <span className="break-all text-dim">sha256 {s.contrato_sha256}</span>
         {s.mint && (
-          <a className="font-mono text-emerald-300 hover:underline" href={explorer.address(s.mint)} target="_blank" rel="noreferrer">
+          <a className="text-acid hover:underline" href={explorer.address(s.mint)} target="_blank" rel="noreferrer">
             mint {s.mint}
           </a>
         )}
@@ -188,8 +188,8 @@ function SolicitudRow({ solicitud: s, onChange }: { solicitud: SolicitudAdmin; o
 function Info({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div className="text-xs text-slate-500">{label}</div>
-      <div className="text-slate-200">{value}</div>
+      <div className="text-xs text-dim">{label}</div>
+      <div className="text-bone">{value}</div>
     </div>
   );
 }

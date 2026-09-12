@@ -15,11 +15,24 @@ import { useState } from "react";
 import { useFideTok, useSession } from "@/components/providers";
 import { RequireSession } from "@/components/require-session";
 import { TxResult, type TxState } from "@/components/tx-result";
-import { Badge, Button, Card, Field, Input, LegalTag, Notice, PageHeader, Select, Stat } from "@/components/ui";
+import {
+  Badge,
+  Button,
+  Display,
+  Field,
+  Input,
+  Kicker,
+  LegalTag,
+  Notice,
+  PageHeader,
+  Section,
+  Select,
+  StatCell,
+} from "@/components/ui";
 import { api } from "@/lib/api";
-import { usdcMint } from "@/lib/config";
+import { ASSET_LABELS, usdcMint } from "@/lib/config";
 import type { FideicomisoPublico } from "@/lib/fideicomisos";
-import { formatInt, formatUsdc } from "@/lib/format";
+import { formatInt, formatUsdc, formatUsdcMoney } from "@/lib/format";
 import { useLoader } from "@/lib/hooks";
 import { describeError } from "@/lib/solana/errors";
 import { fetchFideicomisoState, fetchTokenBalance } from "@/lib/solana/onchain";
@@ -29,7 +42,11 @@ import { sendTx } from "@/lib/solana/tx";
 export default function PortafolioPage() {
   return (
     <>
-      <PageHeader title="Mi portafolio" subtitle="Tus certificados, la renta que cobraste y las transferencias entre inversores verificados." />
+      <PageHeader
+        kicker="Posición"
+        title="Cartera"
+        subtitle="Tus tenencias, la renta acreditada y las transferencias entre inversores habilitados."
+      />
       <RequireSession>
         <Portafolio />
       </RequireSession>
@@ -65,59 +82,112 @@ function Portafolio() {
     return { sol: sol.value, usdcBalance, holdings };
   }, [client, owner]);
 
-  if (!owner) return <Notice tone="warning">Conectá la wallet con la que ingresaste.</Notice>;
-  if (error) return <Notice tone="danger">{error}</Notice>;
-  if (!data) return <div className="h-64 animate-pulse rounded-2xl bg-white/5" />;
+  if (!owner)
+    return (
+      <Section>
+        <Notice tone="warning">Conectá la wallet con la que ingresaste.</Notice>
+      </Section>
+    );
+  if (error)
+    return (
+      <Section>
+        <Notice tone="danger">{error}</Notice>
+      </Section>
+    );
+  if (!data) return <div className="my-8 h-64 animate-pulse rounded-card bg-surface" />;
 
   const conTenencia = data.holdings.filter((h) => h.balance > 0n || h.rentas.length > 0);
   const valorTotal = data.holdings.reduce((acc, h) => acc + h.balance * (h.state?.navPerToken ?? 0n), 0n);
 
   return (
-    <div className="flex flex-col gap-6">
-      <Card className="grid gap-6 sm:grid-cols-4">
-        <Stat label="Valor a NAV" value={formatUsdc(valorTotal)} />
-        <Stat label="USDC disponible" value={formatUsdc(data.usdcBalance)} />
-        <Stat label="SOL (fees)" value={(Number(data.sol) / 1e9).toFixed(3)} />
-        <div className="flex flex-col gap-2">
-          <span className="text-xs uppercase tracking-wider text-slate-500">KYC</span>
-          {me?.kyc?.status === "aprobado" ? (
-            <Badge tone="success">Aprobado</Badge>
-          ) : (
-            <Link href="/kyc" className="text-sm font-semibold text-amber-200 hover:underline">
-              Completar verificación →
-            </Link>
-          )}
+    <div className="flex flex-col">
+      <div className="grid gap-3 pb-6 md:grid-cols-2 xl:grid-cols-4">
+        <StatCell
+          label="Valor de cartera"
+          value={formatUsdcMoney(valorTotal)}
+          tone="acid"
+          className="rounded-card bg-surface shadow-card"
+        />
+        <StatCell
+          label="USDC disponible"
+          value={formatUsdcMoney(data.usdcBalance)}
+          className="rounded-card bg-surface shadow-card"
+        />
+        <StatCell
+          label="SOL para fees"
+          value={(Number(data.sol) / 1e9).toFixed(3)}
+          className="rounded-card bg-surface shadow-card"
+        />
+        <div className="min-w-0 rounded-card bg-surface px-6 py-5 shadow-card">
+          <Kicker>Habilitación</Kicker>
+          <div className="mt-4">
+            {me?.kyc?.status === "aprobado" ? (
+              <Badge tone="success">Habilitado para operar</Badge>
+            ) : (
+              <Link href="/kyc" className="text-[12.5px] uppercase tracking-[0.16em] text-acid hover:underline">
+                Habilitarme →
+              </Link>
+            )}
+          </div>
         </div>
-      </Card>
+      </div>
 
       <Faucet onDone={reload} />
 
-      <Card className="flex flex-col gap-4">
-        <h3 className="font-semibold text-white">Certificados y renta</h3>
+      <div className="pb-6">
+        <Kicker>Tenencias</Kicker>
         {conTenencia.length === 0 && (
-          <p className="text-sm text-slate-500">
+          <p className="mt-4 text-[12.5px] tracking-[0.02em] text-mute">
             Todavía no tenés certificados.{" "}
-            <Link href="/mercado" className="text-emerald-300 hover:underline">
-              Ver el mercado
+            <Link href="/mercado" className="text-acid hover:underline">
+              Ver el mercado →
             </Link>
           </p>
         )}
-        {conTenencia.map((h) => (
-          <div key={h.info.mint} className="flex flex-col gap-3 border-t border-line pt-4 first:border-0 first:pt-0">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <Link href={`/mercado/${h.info.mint}`} className="font-medium text-slate-100 hover:underline">
-                {h.info.nombre}
-              </Link>
-              <span className="text-sm tabular-nums text-slate-300">
-                {formatInt(h.balance)} CP · {formatUsdc(h.balance * (h.state?.navPerToken ?? 0n))}
-              </span>
+        <div className="mt-4 flex flex-col gap-2">
+          {conTenencia.map((h, i) => (
+            <div key={h.info.mint} className="rounded-card bg-surface px-6 py-5 shadow-card">
+              <div className="grid items-center gap-4.5 md:grid-cols-[44px_minmax(0,1fr)_140px_180px]">
+                <div className="text-[12px] font-semibold text-mute">{String(i + 1).padStart(2, "0")}</div>
+                <div className="min-w-0">
+                  <div className="text-[11px] uppercase tracking-[0.18em] text-mute">
+                    {ASSET_LABELS[h.info.asset_type]} · {h.info.simbolo}
+                  </div>
+                  <Link href={`/mercado/${h.info.mint}`} className="hover:text-acid">
+                    <Display size="xs" as="h3" className="mt-1">
+                      {h.info.nombre}
+                    </Display>
+                  </Link>
+                </div>
+                <div>
+                  <div className="text-[10.5px] uppercase tracking-[0.16em] text-mute">Cuotapartes</div>
+                  <div className="mt-1 text-2xl font-semibold tabular-nums">{formatInt(h.balance)}</div>
+                </div>
+                <div>
+                  <div className="text-[10.5px] uppercase tracking-[0.16em] text-mute">Valor</div>
+                  <div className="mt-1 text-[clamp(20px,4.5vw,26px)] font-medium tabular-nums">
+                    {formatUsdcMoney(h.balance * (h.state?.navPerToken ?? 0n))}
+                  </div>
+                </div>
+              </div>
+              {h.rentas.length > 0 && (
+                <div className="mt-4 flex flex-col gap-2">
+                  {h.rentas.map((r) => (
+                    <RentaRow
+                      key={r.index}
+                      renta={r}
+                      mint={address(h.info.mint)}
+                      owner={owner}
+                      balance={h.balance}
+                      onDone={reload}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
-            {h.rentas.map((r) => (
-              <RentaRow key={r.index} renta={r} mint={address(h.info.mint)} owner={owner} balance={h.balance} onDone={reload} />
-            ))}
-          </div>
-        ))}
-      </Card>
+          ))}
+        </div>
+      </div>
 
       <Transferir holdings={data.holdings.filter((h) => h.balance > 0n)} onDone={reload} />
     </div>
@@ -174,21 +244,21 @@ function RentaRow({ renta, mint, owner, balance, onDone }: { renta: Renta; mint:
   }
 
   return (
-    <div className="flex flex-col gap-2 rounded-xl bg-white/[0.03] px-4 py-3 text-sm">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="text-slate-400">
+    <div className="flex flex-col gap-2 rounded-card bg-surface-2 px-4 py-3 text-sm">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <span className="text-[11.5px] tracking-[0.02em] text-mute">
           Distribución #{renta.index} · total {formatUsdc(renta.total)} · TC {renta.arsPerUsd}
         </span>
         {renta.paid !== null ? (
-          <span className="font-semibold text-emerald-300">
+          <span className="text-[12px] font-semibold uppercase tracking-[0.12em] text-up">
             Cobraste {formatUsdc(renta.paid)} (≈ ARS {Math.round((Number(renta.paid) / 1e6) * renta.arsPerUsd).toLocaleString("es-AR")})
           </span>
         ) : !renta.closed && balance > 0n ? (
-          <Button onClick={reclamar} loading={busy}>
+          <Button className="h-10 px-4 text-[11px]" onClick={reclamar} loading={busy}>
             Reclamar mi renta
           </Button>
         ) : (
-          <span className="text-slate-500">Sin participación</span>
+          <span className="text-[11.5px] uppercase tracking-[0.12em] text-dim">Sin participación</span>
         )}
       </div>
       <TxResult state={result} />
@@ -200,10 +270,12 @@ function Faucet({ onDone }: { onDone: () => Promise<void> }) {
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<TxState>(null);
   return (
-    <Card className="flex flex-wrap items-center justify-between gap-3">
+    <div className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-card bg-surface px-6 py-5 shadow-card">
       <div>
-        <h3 className="font-semibold text-white">Fondos de prueba (devnet)</h3>
-        <p className="text-sm text-slate-400">1.000 USDC de prueba y SOL para las fees, para recorrer la demo.</p>
+        <Kicker>Fondos de prueba · devnet</Kicker>
+        <p className="mt-2 text-[12.5px] tracking-[0.02em] text-mute">
+          1.000 USDC de prueba y SOL para las fees, para recorrer la demo.
+        </p>
       </div>
       <div className="flex flex-col items-end gap-2">
         <Button
@@ -227,7 +299,7 @@ function Faucet({ onDone }: { onDone: () => Promise<void> }) {
         </Button>
         <TxResult state={result} />
       </div>
-    </Card>
+    </div>
   );
 }
 
@@ -276,12 +348,14 @@ function Transferir({
   }
 
   return (
-    <Card className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-white">Transferir certificados</h3>
+    <div className="mb-6 flex flex-col gap-4 rounded-card bg-surface px-6 py-6 shadow-card">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <Display size="sm" as="h3">
+          Transferir certificados
+        </Display>
         <LegalTag>CNV · oferta privada</LegalTag>
       </div>
-      <p className="text-sm text-slate-400">
+      <p className="max-w-3xl text-[12.5px] leading-[1.7] tracking-[0.03em] text-mute">
         Podés transferir a otro inversor con KYC. Si el destino no está verificado (por ejemplo, un exchange), el transfer
         hook del token rechaza la transacción en la red.
       </p>
@@ -296,7 +370,7 @@ function Transferir({
           </Select>
         </Field>
         <Field label="Wallet de destino">
-          <Input value={destino} onChange={(e) => setDestino(e.target.value)} placeholder="Dirección Solana" className="font-mono" />
+          <Input value={destino} onChange={(e) => setDestino(e.target.value)} placeholder="Dirección Solana" />
         </Field>
         <Field label="Cantidad">
           <Input type="number" min={1} step={1} value={amount} onChange={(e) => setAmount(e.target.value)} />
@@ -314,6 +388,6 @@ function Transferir({
         </Button>
       </div>
       <TxResult state={result} />
-    </Card>
+    </div>
   );
 }

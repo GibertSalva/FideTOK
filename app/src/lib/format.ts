@@ -3,10 +3,33 @@ import { USDC_UNIT } from "./config";
 const usd = new Intl.NumberFormat("es-AR", { style: "currency", currency: "USD", maximumFractionDigits: 2 });
 const ars = new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 2 });
 const int = new Intl.NumberFormat("es-AR");
+const usdc = new Intl.NumberFormat("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-/** Unidades base de USDC (6 decimales) a texto. */
+/**
+ * Unidades base de USDC (6 decimales) a numero, sin unidad.
+ * El tablero pone "USDC" en el label y la cifra sola en grande.
+ */
+export function formatUsdcAmount(base: bigint | number) {
+  return usdc.format(Number(base) / Number(USDC_UNIT));
+}
+
+/** Unidades base de USDC (6 decimales) a texto con unidad. */
 export function formatUsdc(base: bigint | number) {
-  return usd.format(Number(base) / Number(USDC_UNIT)).replace("US$", "USDC ");
+  return `USDC ${formatUsdcAmount(base)}`;
+}
+
+/**
+ * Unidades base de USDC con simbolo de peso: la cifra grande del tablero.
+ * Arriba de 10.000 se redondea, porque los centavos no entran en la celda ni aportan.
+ */
+export function formatUsdcMoney(base: bigint | number) {
+  const value = Number(base) / Number(USDC_UNIT);
+  return Math.abs(value) >= 10_000 ? `$${int.format(Math.round(value))}` : `$${usdc.format(value)}`;
+}
+
+/** Monto en dolares con simbolo y sin centavos, para totales grandes. */
+export function formatMoney(value: number) {
+  return `$${int.format(Math.round(value))}`;
 }
 
 export function formatUsd(value: number) {

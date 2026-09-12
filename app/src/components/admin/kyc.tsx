@@ -39,8 +39,8 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export function KycAdmin() {
   const { data, error, reload } = useLoader(() => api<KycAdminRow[]>("/api/admin/kyc"), []);
   if (error) return <Notice tone="danger">{error}</Notice>;
-  if (!data) return <div className="h-40 animate-pulse rounded-2xl bg-white/5" />;
-  if (data.length === 0) return <Card className="text-sm text-slate-400">No hay verificaciones cargadas.</Card>;
+  if (!data) return <div className="h-40 animate-pulse rounded-card bg-surface" />;
+  if (data.length === 0) return <Card className="text-sm text-mute">No hay verificaciones cargadas.</Card>;
   return (
     <div className="flex flex-col gap-4">
       {data.map((row) => (
@@ -107,10 +107,10 @@ function KycRow({ row, onChange }: { row: KycAdminRow; onChange: () => Promise<v
     <Card className="flex flex-col gap-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h3 className="font-semibold text-white">
+          <h3 className="font-display text-[22px] uppercase tracking-[-0.02em]">
             {row.apellido}, {row.nombre}
           </h3>
-          <p className="font-mono text-xs text-slate-500">{shortAddress(row.wallet, 6)}</p>
+          <p className="text-xs text-dim">{shortAddress(row.wallet, 6)}</p>
         </div>
         <Badge tone={STATUS[row.status]}>{row.status}</Badge>
       </div>
@@ -129,16 +129,16 @@ function KycRow({ row, onChange }: { row: KycAdminRow; onChange: () => Promise<v
           ] as const
         ).map(([label, url]) =>
           url ? (
-            <a key={label} href={url} target="_blank" rel="noreferrer" className="group flex flex-col gap-1 text-xs text-slate-400">
+            <a key={label} href={url} target="_blank" rel="noreferrer" className="group flex flex-col gap-1 text-xs text-mute">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={url} alt={label} className="h-20 w-32 rounded-lg border border-line object-cover group-hover:border-slate-500" />
+              <img src={url} alt={label} className="h-20 w-32 rounded-pill object-cover transition-transform group-hover:scale-[1.02]" />
               {label}
             </a>
           ) : null,
         )}
       </div>
       <div className="flex flex-col gap-2">
-        <span className="text-xs uppercase tracking-wider text-slate-500">Chequeo de riesgo (UIF / RePET / PEP)</span>
+        <span className="text-[10.5px] uppercase tracking-[0.16em] text-mute">Chequeo de riesgo (UIF / RePET / PEP)</span>
         {row.risk_flags.length === 0 ? (
           <Badge tone="success">Sin alertas</Badge>
         ) : (
@@ -152,7 +152,7 @@ function KycRow({ row, onChange }: { row: KycAdminRow; onChange: () => Promise<v
         )}
       </div>
       {row.whitelist_tx && (
-        <a className="text-xs text-emerald-300 hover:underline" href={explorer.tx(row.whitelist_tx)} target="_blank" rel="noreferrer">
+        <a className="text-xs text-acid hover:underline" href={explorer.tx(row.whitelist_tx)} target="_blank" rel="noreferrer">
           Tx de whitelist ↗
         </a>
       )}
@@ -164,7 +164,7 @@ function KycRow({ row, onChange }: { row: KycAdminRow; onChange: () => Promise<v
           <Button variant="secondary" onClick={rechazar} loading={busy === "rechazar"}>
             Rechazar
           </Button>
-          {blocking && <span className="self-center text-xs text-rose-300">Hay alertas de severidad alta: no se puede aprobar.</span>}
+          {blocking && <span className="self-center text-xs text-down">Hay alertas de severidad alta: no se puede aprobar.</span>}
         </div>
       )}
       <TxResult state={result} />
@@ -175,8 +175,8 @@ function KycRow({ row, onChange }: { row: KycAdminRow; onChange: () => Promise<v
 function Info({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div className="text-xs text-slate-500">{label}</div>
-      <div className="capitalize text-slate-200">{value}</div>
+      <div className="text-xs text-dim">{label}</div>
+      <div className="capitalize text-bone">{value}</div>
     </div>
   );
 }

@@ -5,10 +5,28 @@ import { useState, type FormEvent } from "react";
 
 import { useSession } from "@/components/providers";
 import { RequireSession } from "@/components/require-session";
-import { Badge, Button, Card, Field, Input, LegalTag, Notice, PageHeader, Select } from "@/components/ui";
+import {
+  Badge,
+  Button,
+  Check,
+  DataRow,
+  Display,
+  Field,
+  Input,
+  Kicker,
+  LegalTag,
+  Notice,
+  PageHeader,
+  Section,
+  Select,
+} from "@/components/ui";
 import { api } from "@/lib/api";
+import { shortAddress } from "@/lib/format";
 import { describeError } from "@/lib/solana/errors";
 import { uploadFile } from "@/lib/upload";
+
+const FILE_INPUT =
+  "py-2 text-[11px] uppercase tracking-[0.12em] text-mute file:mr-3 file:rounded-pill file:border-0 file:bg-surface-2 file:px-3.5 file:py-2 file:text-[11px] file:uppercase file:tracking-[0.12em] file:text-mute hover:file:bg-surface-3 hover:file:text-acid";
 
 const ORIGENES = [
   ["salario", "Salario / honorarios"],
@@ -23,8 +41,9 @@ export default function KycPage() {
   return (
     <>
       <PageHeader
-        title="Verificación de identidad"
-        subtitle="Para invertir en fideicomisos necesitamos validar tu identidad y el origen de tus fondos. Tus datos quedan cifrados fuera de la blockchain: on-chain solo va un hash."
+        kicker="Habilitación"
+        title="Alta de inversor"
+        subtitle="Validamos identidad y origen de fondos antes de habilitarte a operar. On-chain solo queda un hash."
         action={<LegalTag>UIF · Ley 26.737</LegalTag>}
       />
       <RequireSession>
@@ -40,36 +59,43 @@ function KycContent() {
 
   if (status === "aprobado") {
     return (
-      <Card className="flex flex-col items-start gap-3">
-        <Badge tone="success">KYC aprobado</Badge>
-        <h2 className="text-lg font-semibold text-white">Tu wallet está habilitada</h2>
-        <p className="text-sm text-slate-400">
+      <Section className="flex flex-col items-start gap-4">
+        <Badge tone="success">Habilitado para operar</Badge>
+        <Display size="lg" as="h2">
+          Ya podés operar
+        </Display>
+        <p className="max-w-xl text-[12.5px] leading-[1.7] tracking-[0.02em] text-mute">
           El fiduciario agregó tu wallet a la whitelist del contrato. Ya podés suscribir certificados y recibir renta.
         </p>
-        <Link href="/mercado" className="text-sm font-semibold text-emerald-300 hover:underline">
+        <Link href="/mercado" className="text-[12px] uppercase tracking-[0.18em] text-acid hover:underline">
           Ir al mercado →
         </Link>
-      </Card>
+      </Section>
     );
   }
   if (status === "pendiente") {
     return (
-      <Card className="flex flex-col items-start gap-3">
-        <Badge tone="warning">En revisión</Badge>
-        <h2 className="text-lg font-semibold text-white">Recibimos tu documentación</h2>
-        <p className="text-sm text-slate-400">
+      <Section className="flex flex-col items-start gap-4">
+        <Badge tone="warning">Alta en revisión</Badge>
+        <Display size="lg" as="h2">
+          Legajo presentado
+        </Display>
+        <p className="max-w-xl text-[12.5px] leading-[1.7] tracking-[0.02em] text-mute">
           El fiduciario cruza tus datos contra los padrones de riesgo. Cuando lo apruebe, tu wallet entra a la whitelist
           y vas a poder invertir.
         </p>
-      </Card>
+      </Section>
     );
   }
   return <KycForm rejected={status === "rechazado"} onDone={refresh} />;
 }
 
 function KycForm({ rejected, onDone }: { rejected: boolean; onDone: () => Promise<void> }) {
+  const { me } = useSession();
   const [step, setStep] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [residente, setResidente] = useState(true);
+  const [jurada, setJurada] = useState(false);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -95,7 +121,7 @@ function KycForm({ rejected, onDone }: { rejected: boolean; onDone: () => Promis
           dni: data.get("dni"),
           cuit: data.get("cuit"),
           nacionalidad: data.get("nacionalidad"),
-          residente_ar: data.get("residente_ar") === "on",
+          residente_ar: residente,
           origen_fondos: data.get("origen_fondos"),
           dni_frente_path: dniFrente,
           dni_dorso_path: dniDorso,
@@ -111,8 +137,8 @@ function KycForm({ rejected, onDone }: { rejected: boolean; onDone: () => Promis
   }
 
   return (
-    <form onSubmit={submit} className="grid gap-6 lg:grid-cols-[1fr_320px]">
-      <Card className="grid gap-5 md:grid-cols-2">
+    <form onSubmit={submit} className="grid gap-3 pb-6 lg:grid-cols-[minmax(0,1fr)_minmax(300px,0.62fr)]">
+      <div className="grid content-start gap-5 rounded-card bg-surface px-6 py-6 shadow-card md:grid-cols-2">
         {rejected && (
           <div className="md:col-span-2">
             <Notice tone="danger">Tu verificación anterior fue rechazada. Revisá los datos y volvé a enviarla.</Notice>
@@ -142,43 +168,59 @@ function KycForm({ rejected, onDone }: { rejected: boolean; onDone: () => Promis
             ))}
           </Select>
         </Field>
-        <label className="flex items-center gap-2 text-sm text-slate-300 md:col-span-2">
-          <input type="checkbox" name="residente_ar" defaultChecked className="size-4 accent-emerald-400" />
-          Soy residente en la Argentina
-        </label>
+        <div className="md:col-span-2">
+          <Check checked={residente} onChange={setResidente}>
+            Soy residente en la Argentina. Si el activo es rural, la Ley 26.737 solo admite residentes.
+          </Check>
+        </div>
         <Field label="DNI — frente">
-          <Input name="dni_frente" type="file" accept="image/*,application/pdf" required className="pt-2" />
+          <Input name="dni_frente" type="file" accept="image/*,application/pdf" required className={FILE_INPUT} />
         </Field>
         <Field label="DNI — dorso">
-          <Input name="dni_dorso" type="file" accept="image/*,application/pdf" required className="pt-2" />
+          <Input name="dni_dorso" type="file" accept="image/*,application/pdf" required className={FILE_INPUT} />
         </Field>
         <Field label="Prueba de vida" hint="Una selfie sosteniendo tu DNI. En el celular abre la cámara.">
-          <Input name="selfie" type="file" accept="image/*" capture="user" required className="pt-2" />
+          <Input name="selfie" type="file" accept="image/*" capture="user" required className={FILE_INPUT} />
         </Field>
-        <label className="flex items-start gap-2 text-sm text-slate-300 md:col-span-2">
-          <input type="checkbox" required className="mt-0.5 size-4 accent-emerald-400" />
-          Declaro bajo juramento que los fondos provienen de actividades lícitas y que los datos son verdaderos.
-        </label>
+        <div className="md:col-span-2">
+          <Check checked={jurada} onChange={setJurada}>
+            Declaro bajo juramento que los fondos provienen de actividades lícitas y que los datos son verdaderos.
+          </Check>
+        </div>
         {error && (
           <div className="md:col-span-2">
             <Notice tone="danger">{error}</Notice>
           </div>
         )}
         <div className="md:col-span-2">
-          <Button type="submit" loading={step !== null}>
+          <Button type="submit" className="h-12 w-full md:w-auto" loading={step !== null} disabled={!jurada}>
             {step ?? "Enviar verificación"}
           </Button>
         </div>
-      </Card>
-      <Card className="flex h-fit flex-col gap-3 text-sm text-slate-400">
-        <h3 className="font-semibold text-white">Qué pasa con tus datos</h3>
-        <p>Los documentos van a un almacenamiento privado al que solo accede el fiduciario.</p>
-        <p>
-          On-chain solo se guarda <span className="font-mono text-slate-300">sha256(DNI | CUIT | secreto)</span>: prueba
-          que tu wallet pasó el KYC sin exponer quién sos.
-        </p>
-        <p>Si el activo es rural, la Ley de Tierras no permite inversores extranjeros: la residencia se valida en el contrato.</p>
-      </Card>
+      </div>
+
+      <aside className="flex flex-col rounded-card bg-surface px-6 py-6 shadow-card">
+        <Kicker>Estado del alta</Kicker>
+        <div className="mt-3.5 text-[clamp(32px,5vw,60px)] font-medium leading-[0.98] tabular-nums text-acid">
+          {rejected ? "0/1" : "1/1"}
+        </div>
+        <div className="mt-2 text-[11.5px] uppercase tracking-[0.1em] text-mute">Legajos a presentar</div>
+
+        <div className="mt-7">
+          <DataRow k="Wallet" v={me?.session ? shortAddress(me.session.wallet) : "—"} />
+          <DataRow k="Estado" v={rejected ? "Rechazado" : "Sin enviar"} />
+          <DataRow k="Residencia fiscal" v={residente ? "Argentina" : "Exterior"} />
+          <DataRow k="Documentos" v="DNI frente · dorso · prueba de vida" />
+        </div>
+
+        <div className="mt-auto flex flex-col gap-3 pt-7 text-[11px] leading-[1.7] tracking-[0.02em] text-dim">
+          <p>Los documentos van a un almacenamiento privado al que solo accede el fiduciario.</p>
+          <p>
+            On-chain solo se guarda sha256(DNI | CUIT | secreto): prueba que tu wallet pasó el KYC sin exponer quién sos.
+          </p>
+          <p>Si el activo es rural, la Ley de Tierras no permite inversores extranjeros.</p>
+        </div>
+      </aside>
     </form>
   );
 }

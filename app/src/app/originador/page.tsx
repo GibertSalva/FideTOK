@@ -3,10 +3,23 @@
 import { useState, type FormEvent } from "react";
 
 import { RequireSession } from "@/components/require-session";
-import { Badge, Button, Card, Field, Input, LegalTag, Notice, PageHeader, Select, Textarea } from "@/components/ui";
+import {
+  Badge,
+  Button,
+  DataRow,
+  Display,
+  Field,
+  Input,
+  Kicker,
+  LegalTag,
+  Notice,
+  PageHeader,
+  Select,
+  Textarea,
+} from "@/components/ui";
 import { api } from "@/lib/api";
 import { ASSET_LABELS, explorer, type AssetKey } from "@/lib/config";
-import { shortAddress } from "@/lib/format";
+import { formatInt, formatMoney, shortAddress } from "@/lib/format";
 import { useLoader } from "@/lib/hooks";
 import { describeError } from "@/lib/solana/errors";
 import { sha256Hex, uploadFile } from "@/lib/upload";
@@ -28,6 +41,9 @@ const STATUS_BADGE = {
   emitida: { tone: "success", label: "Emitida en Solana" },
   rechazada: { tone: "danger", label: "Rechazada" },
 } as const;
+
+const FILE_INPUT =
+  "py-2 text-[11px] uppercase tracking-[0.12em] text-mute file:mr-3 file:rounded-pill file:border-0 file:bg-surface-2 file:px-3.5 file:py-2 file:text-[11px] file:uppercase file:tracking-[0.12em] file:text-mute hover:file:bg-surface-3 hover:file:text-acid";
 
 // Campos propios de cada tipo de activo (quedan en detalle_activo).
 const ASSET_FIELDS: Record<AssetKey, Array<{ name: string; label: string; placeholder?: string }>> = {
@@ -53,8 +69,9 @@ export default function OriginadorPage() {
   return (
     <>
       <PageHeader
-        title="Tokenizar un activo"
-        subtitle="Cargá el activo y el contrato de fideicomiso firmado. El fiduciario audita los papeles y recién ahí emite los certificados en Solana."
+        kicker="Originación"
+        title="Nueva emisión"
+        subtitle="El fiduciario controla título, gravámenes y tasación antes de que los certificados coticen."
         action={<LegalTag>CCyC · AFIP</LegalTag>}
       />
       <RequireSession>
@@ -68,30 +85,49 @@ function Originador() {
   const { data: solicitudes, reload } = useLoader(() => api<Solicitud[]>("/api/solicitudes").catch(() => []), []);
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
+    <div className="flex flex-col">
       <SolicitudForm onCreated={reload} />
-      <Card className="flex h-fit flex-col gap-4">
-        <h3 className="font-semibold text-white">Mis solicitudes</h3>
-        {solicitudes === null && <div className="h-16 animate-pulse rounded-xl bg-white/5" />}
-        {solicitudes?.length === 0 && <p className="text-sm text-slate-500">Todavía no cargaste ningún activo.</p>}
-        {solicitudes?.map((s) => (
-          <div key={s.id} className="flex flex-col gap-1.5 border-t border-line pt-3 first:border-0 first:pt-0">
-            <div className="flex items-center justify-between gap-2">
-              <span className="font-medium text-slate-100">{s.nombre}</span>
-              <span className="font-mono text-xs text-slate-500">{s.simbolo}</span>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge tone={STATUS_BADGE[s.status].tone}>{STATUS_BADGE[s.status].label}</Badge>
-              <span className="text-xs text-slate-500">{ASSET_LABELS[s.asset_type]}</span>
-            </div>
-            {s.mint && (
-              <a className="font-mono text-xs text-emerald-300 hover:underline" href={explorer.address(s.mint)} target="_blank" rel="noreferrer">
-                mint {shortAddress(s.mint, 6)}
-              </a>
-            )}
+
+      <div className="pb-6">
+        <Kicker>Emisiones presentadas</Kicker>
+        {solicitudes === null && <div className="mt-4 h-16 animate-pulse rounded-card bg-surface" />}
+        {solicitudes?.length === 0 && (
+          <p className="mt-4 text-[12.5px] tracking-[0.02em] text-mute">Todavía no cargaste ningún activo.</p>
+        )}
+        {solicitudes && solicitudes.length > 0 && (
+          <div className="mt-4 flex flex-col gap-2">
+            {solicitudes.map((s, i) => (
+              <div
+                key={s.id}
+                className="grid items-center gap-4.5 rounded-card bg-surface px-6 py-5 shadow-card md:grid-cols-[44px_minmax(0,1fr)_200px_minmax(0,200px)]"
+              >
+                <div className="text-[12px] font-semibold text-mute">{String(i + 1).padStart(2, "0")}</div>
+                <div className="min-w-0">
+                  <div className="text-[11px] uppercase tracking-[0.18em] text-mute">
+                    {ASSET_LABELS[s.asset_type]} · {s.simbolo}
+                  </div>
+                  <Display size="xs" as="h3" className="mt-1">
+                    {s.nombre}
+                  </Display>
+                </div>
+                <Badge tone={STATUS_BADGE[s.status].tone}>{STATUS_BADGE[s.status].label}</Badge>
+                {s.mint ? (
+                  <a
+                    className="truncate text-[12px] tracking-[0.06em] text-acid hover:underline md:text-right"
+                    href={explorer.address(s.mint)}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    mint {shortAddress(s.mint, 6)} ↗
+                  </a>
+                ) : (
+                  <span className="text-[11px] uppercase tracking-[0.14em] text-dim md:text-right">Sin emitir</span>
+                )}
+              </div>
+            ))}
           </div>
-        ))}
-      </Card>
+        )}
+      </div>
     </div>
   );
 }
@@ -99,6 +135,10 @@ function Originador() {
 function SolicitudForm({ onCreated }: { onCreated: () => Promise<void> }) {
   const [assetType, setAssetType] = useState<AssetKey>("inmueble");
   const [contractHash, setContractHash] = useState<string | null>(null);
+  // El panel lateral se actualiza mientras se escribe, como en el diseno.
+  const [valuacion, setValuacion] = useState("");
+  const [cantidad, setCantidad] = useState("");
+  const [precio, setPrecio] = useState("");
   const [step, setStep] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
@@ -136,6 +176,9 @@ function SolicitudForm({ onCreated }: { onCreated: () => Promise<void> }) {
       });
       form.reset();
       setContractHash(null);
+      setValuacion("");
+      setCantidad("");
+      setPrecio("");
       setDone(true);
       await onCreated();
     } catch (e) {
@@ -145,9 +188,12 @@ function SolicitudForm({ onCreated }: { onCreated: () => Promise<void> }) {
     }
   }
 
+  const certificados = Math.max(0, Math.floor(Number(cantidad) || 0));
+  const totalEmision = certificados * (Number(precio) || 0);
+
   return (
-    <form onSubmit={submit}>
-      <Card className="grid gap-5 md:grid-cols-2">
+    <form onSubmit={submit} className="grid gap-3 pb-6 lg:grid-cols-[minmax(0,1fr)_minmax(300px,0.62fr)]">
+      <div className="grid content-start gap-5 rounded-card bg-surface px-6 py-6 shadow-card md:grid-cols-2">
         <Field label="Tipo de activo">
           <Select value={assetType} onChange={(e) => setAssetType(e.target.value as AssetKey)}>
             {Object.entries(ASSET_LABELS).map(([value, label]) => (
@@ -185,13 +231,40 @@ function SolicitudForm({ onCreated }: { onCreated: () => Promise<void> }) {
           <Input name="registro" maxLength={64} placeholder="Matrícula 1.234.567 - RPI Córdoba" />
         </Field>
         <Field label="Valuación (USD)">
-          <Input name="valuacion_usd" required type="number" min={1} step="any" placeholder="1000000" />
+          <Input
+            name="valuacion_usd"
+            required
+            type="number"
+            min={1}
+            step="any"
+            placeholder="1000000"
+            value={valuacion}
+            onChange={(e) => setValuacion(e.target.value)}
+          />
         </Field>
         <Field label="Cantidad de certificados">
-          <Input name="cantidad" required type="number" min={1} step={1} placeholder="10000" />
+          <Input
+            name="cantidad"
+            required
+            type="number"
+            min={1}
+            step={1}
+            placeholder="10000"
+            value={cantidad}
+            onChange={(e) => setCantidad(e.target.value)}
+          />
         </Field>
         <Field label="Precio por certificado (USDC)">
-          <Input name="precio_usdc" required type="number" min={0.000001} step="any" placeholder="100" />
+          <Input
+            name="precio_usdc"
+            required
+            type="number"
+            min={0.000001}
+            step="any"
+            placeholder="100"
+            value={precio}
+            onChange={(e) => setPrecio(e.target.value)}
+          />
         </Field>
         <Field label="Contrato de fideicomiso firmado (PDF)" hint="Su hash sha256 queda grabado en el token">
           <Input
@@ -199,7 +272,7 @@ function SolicitudForm({ onCreated }: { onCreated: () => Promise<void> }) {
             type="file"
             accept="application/pdf"
             required
-            className="pt-2"
+            className={FILE_INPUT}
             onChange={async (e) => {
               const file = e.target.files?.[0];
               setContractHash(file ? await sha256Hex(file) : null);
@@ -207,7 +280,7 @@ function SolicitudForm({ onCreated }: { onCreated: () => Promise<void> }) {
           />
         </Field>
         {contractHash && (
-          <p className="break-all font-mono text-xs text-slate-500 md:col-span-2">sha256: {contractHash}</p>
+          <p className="break-all text-[11px] tracking-[0.04em] text-dim md:col-span-2">sha256: {contractHash}</p>
         )}
         {error && (
           <div className="md:col-span-2">
@@ -220,11 +293,31 @@ function SolicitudForm({ onCreated }: { onCreated: () => Promise<void> }) {
           </div>
         )}
         <div className="md:col-span-2">
-          <Button type="submit" loading={step !== null}>
+          <Button type="submit" className="h-12 w-full md:w-auto" loading={step !== null}>
             {step ?? "Enviar a auditoría"}
           </Button>
         </div>
-      </Card>
+      </div>
+
+      <aside className="flex flex-col rounded-card bg-surface px-6 py-6 shadow-card">
+        <Kicker>La emisión, en vivo</Kicker>
+        <div className="mt-3.5 text-[clamp(32px,5vw,60px)] font-medium leading-[0.98] tracking-[-0.01em] tabular-nums text-acid">
+          {certificados > 0 ? formatInt(certificados) : "—"}
+        </div>
+        <div className="mt-2 text-[11.5px] uppercase tracking-[0.14em] text-mute">Cuotapartes a emitir</div>
+
+        <div className="mt-7">
+          <DataRow k="Bien" v={ASSET_LABELS[assetType]} />
+          <DataRow k="Valuación" v={valuacion ? formatMoney(Number(valuacion)) : "—"} />
+          <DataRow k="Valor nominal" v={precio ? `$${precio} USDC` : "—"} />
+          <DataRow k="Total de la emisión" v={totalEmision > 0 ? `${formatMoney(totalEmision)} USDC` : "—"} />
+          <DataRow k="Contrato" v={contractHash ? "Cargado · sha256 calculado" : "Sin cargar"} />
+        </div>
+
+        <div className="mt-auto pt-7 text-[11px] leading-[1.7] tracking-[0.02em] text-dim">
+          El fiduciario controla título, gravámenes y tasación antes de emitir. Nada sale a mercado sin ese control.
+        </div>
+      </aside>
     </form>
   );
 }

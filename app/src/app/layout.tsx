@@ -1,19 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Archivo_Black, IBM_Plex_Mono } from "next/font/google";
 
 import { Navbar } from "@/components/navbar";
 import { Providers } from "@/components/providers";
 
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const archivoBlack = Archivo_Black({
+  variable: "--font-archivo-black",
   subsets: ["latin"],
+  weight: "400",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
@@ -24,12 +26,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="es" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col">
+    <html lang="es" className={`${archivoBlack.variable} ${plexMono.variable} h-full antialiased`}>
+      <body className="flex min-h-full flex-col bg-ink">
         <Providers>
           <Navbar />
-          <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-10">{children}</main>
-          <footer className="border-t border-line py-6 text-center text-xs text-slate-500">
+          <main className="mx-auto flex w-full min-w-0 max-w-screen-2xl flex-1 flex-col px-6 pb-6 sm:px-10 lg:px-14">
+            {children}
+          </main>
+          <footer className="mx-auto w-full max-w-screen-2xl px-6 py-8 text-[11px] uppercase tracking-[0.14em] text-dim sm:px-10 lg:px-14">
             FideTOK · Solana devnet · Córdoba Hack 2026
           </footer>
         </Providers>

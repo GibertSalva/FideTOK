@@ -2,46 +2,73 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { SVGProps } from "react";
 
-import { useSession } from "@/components/providers";
+import {
+  IconFiduciario,
+  IconMercado,
+  IconPortafolio,
+  IconTokenizar,
+  IconVerificacion,
+} from "@/components/icons";
+import { ROL_LABEL, roleChip, useRol, type Rol } from "@/components/roles";
 import { cn } from "@/components/ui";
 import { WalletButton } from "@/components/wallet-button";
 
+type Item = { href: string; label: string; Icono: (p: SVGProps<SVGSVGElement> & { size?: number }) => React.ReactElement };
+
+const MERCADO: Item = { href: "/mercado", label: "Mercado", Icono: IconMercado };
+const CARTERA: Item = { href: "/portafolio", label: "Cartera", Icono: IconPortafolio };
+const HABILITACION: Item = { href: "/kyc", label: "Habilitación", Icono: IconVerificacion };
+const EMISIONES: Item = { href: "/originador", label: "Emisiones", Icono: IconTokenizar };
+const ADMINISTRACION: Item = { href: "/admin", label: "Administración", Icono: IconFiduciario };
+
+/** Cada rol ve solo lo que puede operar. Sin rol definido, las dos puertas de entrada. */
+const NAV: Record<Rol | "visitante", Item[]> = {
+  inversor: [MERCADO, CARTERA, HABILITACION],
+  fiduciante: [MERCADO, EMISIONES],
+  administrador: [ADMINISTRACION, MERCADO],
+  visitante: [MERCADO, HABILITACION, EMISIONES],
+};
+
 export function Navbar() {
-  const { me } = useSession();
   const pathname = usePathname();
-  const links = [
-    { href: "/mercado", label: "Mercado" },
-    { href: "/portafolio", label: "Portafolio" },
-    { href: "/kyc", label: "Verificación" },
-    { href: "/originador", label: "Tokenizar" },
-    ...(me?.session?.isAdmin ? [{ href: "/admin", label: "Fiduciario" }] : []),
-  ];
+  const { rol } = useRol();
+  const links = NAV[rol ?? "visitante"];
 
   return (
-    <header className="sticky top-0 z-30 border-b border-line bg-ink/80 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-6">
-        <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2 text-lg font-semibold tracking-tight text-white">
-            <span className="grid size-7 place-items-center rounded-lg bg-emerald-400 text-sm font-bold text-slate-950">F</span>
-            FideTOK
-          </Link>
-          <nav className="hidden items-center gap-1 md:flex">
-            {links.map((link) => (
+    <header className="sticky top-0 z-30 bg-ink">
+      <div className="mx-auto flex w-full max-w-screen-2xl flex-wrap items-center gap-4 px-6 py-4 sm:px-10 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-6 lg:px-14">
+        <Link href="/" className="flex items-center gap-2.5">
+          <span className="block size-3.5 rounded-md bg-acid" />
+          <span className="font-display text-[19px] tracking-[-0.01em]">FIDETOK</span>
+        </Link>
+
+        <nav className="order-3 flex w-full items-center gap-1 overflow-x-auto lg:order-none lg:w-auto">
+          {links.map(({ href, label, Icono }) => {
+            const active = pathname.startsWith(href);
+            return (
               <Link
-                key={link.href}
-                href={link.href}
+                key={href}
+                href={href}
                 className={cn(
-                  "rounded-lg px-3 py-2 text-sm transition-colors",
-                  pathname.startsWith(link.href) ? "bg-white/5 text-white" : "text-slate-400 hover:text-white",
+                  "flex shrink-0 items-center gap-2 rounded-pill px-3.5 py-2 text-[13px] transition-colors",
+                  active ? "bg-surface-2 text-acid" : "text-mute hover:text-bone",
                 )}
               >
-                {link.label}
+                <Icono size={16} className={active ? "opacity-100" : "opacity-70"} />
+                {label}
               </Link>
-            ))}
-          </nav>
+            );
+          })}
+        </nav>
+
+        <div className="ml-auto flex items-center gap-2.5">
+          {rol && (
+            <span className={cn("hidden sm:inline-flex", roleChip(rol))}>{ROL_LABEL[rol]}</span>
+          )}
+          <WalletButton />
         </div>
-        <WalletButton />
       </div>
     </header>
   );

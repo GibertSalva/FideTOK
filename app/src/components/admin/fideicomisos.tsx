@@ -34,8 +34,8 @@ export function FideicomisosAdmin() {
   }, [client]);
 
   if (error) return <Notice tone="danger">{error}</Notice>;
-  if (!data) return <div className="h-40 animate-pulse rounded-2xl bg-white/5" />;
-  if (data.length === 0) return <Card className="text-sm text-slate-400">Todavía no hay fideicomisos emitidos.</Card>;
+  if (!data) return <div className="h-40 animate-pulse rounded-card bg-surface" />;
+  if (data.length === 0) return <Card className="text-sm text-mute">Todavía no hay fideicomisos emitidos.</Card>;
   return (
     <div className="flex flex-col gap-4">
       {data.map((item) => (
@@ -124,7 +124,7 @@ function FideicomisoAdminCard({ info, state, pool, onChange }: Props) {
     <Card className="flex flex-col gap-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <h3 className="font-semibold text-white">{info.nombre}</h3>
+          <h3 className="font-display text-[22px] uppercase tracking-[-0.02em]">{info.nombre}</h3>
           <Badge tone={info.asset_type === "rural" ? "warning" : "info"}>{ASSET_LABELS[info.asset_type]}</Badge>
         </div>
         {state.transfersLocked && <Badge tone="warning">Distribución abierta</Badge>}

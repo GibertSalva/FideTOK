@@ -40,8 +40,8 @@ export function DistribucionesAdmin() {
   const mint = selected || fideicomisos.data?.[0]?.mint || "";
 
   if (fideicomisos.error) return <Notice tone="danger">{fideicomisos.error}</Notice>;
-  if (!fideicomisos.data) return <div className="h-40 animate-pulse rounded-2xl bg-white/5" />;
-  if (fideicomisos.data.length === 0) return <Card className="text-sm text-slate-400">Todavía no hay fideicomisos emitidos.</Card>;
+  if (!fideicomisos.data) return <div className="h-40 animate-pulse rounded-card bg-surface" />;
+  if (fideicomisos.data.length === 0) return <Card className="text-sm text-mute">Todavía no hay fideicomisos emitidos.</Card>;
 
   const nombres = new Map(fideicomisos.data.map((f) => [f.mint, f.nombre]));
   return (
@@ -58,24 +58,24 @@ export function DistribucionesAdmin() {
       {mint && <NuevaDistribucion key={mint} mint={address(mint)} onDone={historial.reload} />}
       <Card className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-white">Distribuciones y reportes fiscales</h3>
+          <h3 className="font-display text-[22px] uppercase tracking-[-0.02em]">Distribuciones y reportes fiscales</h3>
           <LegalTag>AFIP</LegalTag>
         </div>
-        {(historial.data ?? []).length === 0 && <p className="text-sm text-slate-500">Sin distribuciones todavía.</p>}
+        {(historial.data ?? []).length === 0 && <p className="text-sm text-dim">Sin distribuciones todavía.</p>}
         {(historial.data ?? []).map((d) => (
-          <div key={d.id} className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-3 text-sm first:border-0 first:pt-0">
+          <div key={d.id} className="flex flex-wrap items-center justify-between gap-3 border-t border-line/60 pt-3 text-sm first:border-0 first:pt-0">
             <div className="flex flex-col">
-              <span className="text-slate-100">
+              <span className="text-bone">
                 {nombres.get(d.mint) ?? shortAddress(d.mint)} · #{d.indice}
               </span>
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-dim">
                 {formatUsdc(BigInt(Math.round(Number(d.total_usdc) * Number(USDC_UNIT))))} · TC {d.ars_por_usd} ({d.fx_source}) ·{" "}
                 {d.pagos?.[0]?.count ?? 0} pagos
               </span>
             </div>
             <div className="flex items-center gap-3">
               <Badge tone={d.close_tx ? "success" : "warning"}>{d.close_tx ? "Cerrada" : "Abierta"}</Badge>
-              <a className="text-xs font-semibold text-emerald-300 hover:underline" href={`/api/admin/reportes/${d.id}`}>
+              <a className="text-xs font-semibold text-acid hover:underline" href={`/api/admin/reportes/${d.id}`}>
                 Descargar CSV
               </a>
             </div>
@@ -240,7 +240,7 @@ function NuevaDistribucion({ mint, onDone }: { mint: Address; onDone: () => Prom
   return (
     <Card className="flex flex-col gap-5">
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-white">Distribuir renta del período</h3>
+        <h3 className="font-display text-[22px] uppercase tracking-[-0.02em]">Distribuir renta del período</h3>
         {state?.transfersLocked && <Badge tone="warning">Hay una distribución abierta</Badge>}
       </div>
       <div className="grid gap-4 md:grid-cols-3">
@@ -253,10 +253,10 @@ function NuevaDistribucion({ mint, onDone }: { mint: Address; onDone: () => Prom
         >
           <Input type="number" min={0} step="any" value={tc} placeholder={fx.data ? String(fx.data.venta) : ""} onChange={(e) => setTc(e.target.value)} />
         </Field>
-        <div className="flex flex-col justify-end gap-1 rounded-xl bg-white/[0.03] px-4 py-3">
-          <span className="text-xs text-slate-500">A distribuir en USDC</span>
-          <span className="text-lg font-semibold text-white tabular-nums">{formatUsdc(totalUsdc)}</span>
-          <span className="text-xs text-slate-500">
+        <div className="flex flex-col justify-end gap-1 rounded-card bg-surface-2 px-4 py-3">
+          <span className="text-xs text-dim">A distribuir en USDC</span>
+          <span className="text-lg font-semibold text-bone tabular-nums">{formatUsdc(totalUsdc)}</span>
+          <span className="text-xs text-dim">
             {formatArs(Number(ars) || 0)} ÷ {tipoCambio || "—"}
           </span>
         </div>
@@ -264,7 +264,7 @@ function NuevaDistribucion({ mint, onDone }: { mint: Address; onDone: () => Prom
 
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
-          <thead className="text-xs uppercase tracking-wider text-slate-500">
+          <thead className="text-[10.5px] uppercase tracking-[0.16em] text-mute">
             <tr>
               <th className="py-2 pr-4 font-medium">Tenedor</th>
               <th className="py-2 pr-4 font-medium">Certificados</th>
@@ -274,27 +274,27 @@ function NuevaDistribucion({ mint, onDone }: { mint: Address; onDone: () => Prom
           </thead>
           <tbody>
             {preview.map((h) => (
-              <tr key={h.address} className="border-t border-line">
-                <td className="py-2 pr-4 font-mono text-xs text-slate-300">{shortAddress(h.owner, 6)}</td>
+              <tr key={h.address} className="border-t border-line/60">
+                <td className="py-2 pr-4 text-xs text-mute">{shortAddress(h.owner, 6)}</td>
                 <td className="py-2 pr-4 tabular-nums">{formatInt(h.amount)}</td>
                 <td className="py-2 pr-4 tabular-nums">{supply > 0n ? ((Number(h.amount) / Number(supply)) * 100).toFixed(2) : 0}%</td>
-                <td className="py-2 pr-4 tabular-nums text-emerald-300">{formatUsdc(h.usdc)}</td>
+                <td className="py-2 pr-4 tabular-nums text-acid">{formatUsdc(h.usdc)}</td>
               </tr>
             ))}
           </tbody>
         </table>
-        {data.data && preview.length === 0 && <p className="py-3 text-sm text-slate-500">Nadie tiene certificados de este fideicomiso todavía.</p>}
+        {data.data && preview.length === 0 && <p className="py-3 text-sm text-dim">Nadie tiene certificados de este fideicomiso todavía.</p>}
       </div>
 
       {error && <Notice tone="danger">{error}</Notice>}
       {log.length > 0 && (
         <ol className="flex flex-col gap-1.5 text-sm">
           {log.map((item, i) => (
-            <li key={i} className="flex flex-wrap items-center gap-2 text-slate-300">
-              <span className="text-emerald-300">✓</span>
+            <li key={i} className="flex flex-wrap items-center gap-2 text-mute">
+              <span className="text-acid">✓</span>
               {item.text}
               {item.signature && (
-                <a className="text-xs text-emerald-300 hover:underline" href={explorer.tx(item.signature)} target="_blank" rel="noreferrer">
+                <a className="text-xs text-acid hover:underline" href={explorer.tx(item.signature)} target="_blank" rel="noreferrer">
                   tx ↗
                 </a>
               )}

@@ -23,29 +23,34 @@ export default function AdminPage() {
   return (
     <>
       <PageHeader
-        title="Panel del fiduciario"
-        subtitle="Audita la documentación, habilita inversores, emite los certificados y reparte la renta. Cada acción on-chain la firmás con tu wallet."
+        kicker="Mesa de control"
+        title="Administración"
+        subtitle="Legajos, habilitaciones, emisiones y liquidación de renta. Cada acción la firmás con tu wallet."
       />
       <RequireSession admin>
-        <div className="mb-6 flex flex-wrap gap-2 border-b border-line">
+        <div className="flex flex-wrap items-stretch gap-1 rounded-pill bg-surface p-1">
           {TABS.map((t) => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
               className={cn(
-                "-mb-px flex items-center gap-2 border-b-2 px-4 py-3 text-sm transition-colors",
-                tab === t.key ? "border-emerald-400 text-white" : "border-transparent text-slate-400 hover:text-white",
+                "flex items-center gap-2.5 rounded-pill px-5 py-2.5 text-[12px] uppercase tracking-[0.14em] transition-all",
+                tab === t.key
+                  ? "bg-surface-2 font-semibold text-acid"
+                  : "text-mute hover:bg-surface-2/60 hover:text-bone",
               )}
             >
               {t.label}
-              <span className="font-mono text-[10px] uppercase text-slate-500">{t.flujo}</span>
+              <span className="text-[10px] tracking-[0.14em] text-dim">{t.flujo}</span>
             </button>
           ))}
         </div>
-        {tab === "solicitudes" && <SolicitudesAdmin />}
-        {tab === "kyc" && <KycAdmin />}
-        {tab === "fideicomisos" && <FideicomisosAdmin />}
-        {tab === "distribuciones" && <DistribucionesAdmin />}
+        <div className="flex flex-col gap-6 py-6">
+          {tab === "solicitudes" && <SolicitudesAdmin />}
+          {tab === "kyc" && <KycAdmin />}
+          {tab === "fideicomisos" && <FideicomisosAdmin />}
+          {tab === "distribuciones" && <DistribucionesAdmin />}
+        </div>
       </RequireSession>
     </>
   );
