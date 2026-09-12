@@ -33,8 +33,29 @@ La Ley de Tierras se activa sola cuando el activo es `Rural`: los extranjeros no
 - `programs/fidetok`, `programs/fidetok_hook`: programas Anchor.
 - `programs/fidetok_hook/tests/test_flujos.rs`: tests E2E de los 5 flujos en LiteSVM.
 - `idl/`: IDLs commiteados (Vercel no tiene `target/`).
-- `client/`: SDK TypeScript. Cliente generado por Codama en `src/generated`, helpers en `src/lib` y scripts de devnet en `src/scripts`.
-- `deployments/devnet.json`: direcciones del deploy (lo escribe `pnpm seed`).
+- `client/`: SDK TypeScript (`@fidetok/client`). Cliente generado por Codama en `src/generated`, helpers en `src/lib` y scripts de devnet en `src/scripts`.
+- `app/`: web en Next.js 16 (App Router). Wallet Standard vía `@solana/kit-plugin-wallet`, login firmando un mensaje, Supabase solo del lado del servidor.
+- `supabase/migrations/0001_init.sql`: esquema (perfiles, KYC, solicitudes, NAV, distribuciones, pagos) y buckets privados.
+- `deployments/devnet.json`: direcciones del deploy (lo escribe `pnpm seed`). El keypair del faucet queda en `deployments/faucet-keypair.json`, que está gitignoreado.
+
+## App web
+
+| Ruta | Rol | Flujo |
+|---|---|---|
+| `/originador` | Fiduciante | 1: carga el activo y el contrato firmado (el sha256 se verifica en el servidor) |
+| `/kyc` | Inversor | 2: DNI, prueba de vida, origen de fondos, chequeo de riesgo |
+| `/mercado`, `/mercado/[mint]` | Inversor | 3 y 4: suscripción primaria y pool al NAV con guardia Pyth |
+| `/portafolio` | Inversor | 5: renta cobrada, reclamo, transferencia P2P (con la demo del cerrojo) y faucet |
+| `/admin` | Fiduciario | Auditoría y emisión, whitelist, NAV y pool, distribución y CSV para AFIP |
+| `/verificar/[mint]` | Público | Compara un PDF con el hash del contrato grabado en el token |
+
+Setup:
+
+1. Crear un proyecto en Supabase (plan Free). En el SQL Editor, correr `supabase/migrations/0001_init.sql`.
+2. `cp app/.env.local.example app/.env.local` y completar: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SESSION_SECRET` (`openssl rand -hex 32`), `ADMIN_WALLET` (la wallet de Phantom del fiduciario), `NEXT_PUBLIC_USDC_MINT` y `FAUCET_KEYPAIR` (los dos últimos salen de `pnpm seed`).
+3. `pnpm install` en la raíz y `pnpm dev`: compila el SDK y levanta Next en `http://localhost:3000`.
+
+Deploy en Vercel: importar el repo con Root Directory `app` y cargar las mismas variables de entorno. El `build` de la app compila primero el SDK del workspace.
 
 ## Comandos
 

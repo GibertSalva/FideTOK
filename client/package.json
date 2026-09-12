@@ -3,6 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "main": "./dist/sdk.js",
+  "types": "./dist/sdk.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/sdk.d.ts",
+      "default": "./dist/sdk.js"
+    }
+  },
   "scripts": {
     "codegen": "cp ../target/idl/fidetok.json ../target/idl/fidetok_hook.json ../idl/ && codama run js -c codama.fidetok.json && codama run js -c codama.hook.json",
     "build": "tsc -p tsconfig.json",

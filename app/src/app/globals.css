@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+/* Tema único oscuro (navy), pensado para la demo. */
+@theme inline {
+  --color-ink: #070d1a;
+  --color-panel: #0d1628;
+  --color-panel-2: #121d33;
+  --color-line: #1d2a45;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background: #070d1a;
+  background-image: radial-gradient(60rem 30rem at 80% -10%, rgba(52, 211, 153, 0.08), transparent),
+    radial-gradient(50rem 30rem at -10% 10%, rgba(56, 189, 248, 0.06), transparent);
+  color: #e2e8f0;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}

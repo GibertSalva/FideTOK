@@ -1,11 +1,22 @@
-// Prepara FideTOK en devnet: USDC mock, configuracion global y (opcional) fideicomisos demo.
+// Prepara FideTOK en devnet: USDC mock + faucet, configuracion global y (opcional) fideicomisos demo.
 // Uso: pnpm seed [--demo]
 // La wallet de SOLANA_WALLET_PATH tiene que ser la upgrade authority de fidetok (quien deployo).
-// ADMIN_WALLET (opcional) designa al fiduciario; por defecto es la misma wallet.
-import { mkdir, writeFile } from "node:fs/promises";
+// ADMIN_WALLET (opcional) designa al fiduciario (la wallet de Phantom); por defecto es la misma wallet.
+import { randomBytes } from "node:crypto";
+import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 
-import { address, generateKeyPairSigner, getAddressEncoder, getProgramDerivedAddress, type Address } from "@solana/kit";
-import { getCreateAccountInstruction } from "@solana-program/system";
+import {
+  address,
+  createKeyPairSignerFromBytes,
+  createKeyPairSignerFromPrivateKeyBytes,
+  generateKeyPairSigner,
+  getAddressEncoder,
+  getProgramDerivedAddress,
+  type Address,
+  type Instruction,
+  type KeyPairSigner,
+} from "@solana/kit";
+import { getCreateAccountInstruction, getTransferSolInstruction } from "@solana-program/system";
 import {
   findAssociatedTokenPda,
   getCreateAssociatedTokenIdempotentInstruction,
@@ -28,16 +39,26 @@ import { FIDETOK_HOOK_PROGRAM_ADDRESS, getInitializeExtraAccountMetaListInstruct
 import { PYTH_USDC_USD_PRICE_ACCOUNT, sha256, USDC_DECIMALS } from "../lib/fidetok.js";
 import { explorerTx, send } from "../lib/send.js";
 
+type Client = Awaited<ReturnType<typeof createFideTokClient>>;
+
 const BPF_LOADER_UPGRADEABLE = address("BPFLoaderUpgradeab1e11111111111111111111111");
 const USDC = 1_000_000n;
+const SOL = 1_000_000_000n;
 const APP_URL = process.env.APP_URL ?? "https://fidetok.vercel.app";
+const DEPLOYMENTS = new URL("../../../deployments/", import.meta.url);
+// Keypair del faucet (mint authority del USDC mock). Esta gitignoreado: va a FAUCET_KEYPAIR en la app.
+const FAUCET_FILE = new URL("faucet-keypair.json", DEPLOYMENTS);
 
 async function main() {
   const client = await createFideTokClient();
   const payer = client.payer;
   const admin: Address = process.env.ADMIN_WALLET ? address(process.env.ADMIN_WALLET) : payer.address;
   const [config] = await findConfigPda();
+  await mkdir(DEPLOYMENTS, { recursive: true });
   console.log(`Deployer: ${payer.address}\nAdmin (fiduciario): ${admin}`);
+
+  const faucet = await loadOrCreateFaucet();
+  console.log(`Faucet: ${faucet.address}`);
 
   const existing = await fetchMaybeConfig(client.rpc, config);
   let usdcMint: Address;
@@ -45,7 +66,7 @@ async function main() {
     usdcMint = existing.data.usdcMint;
     console.log(`Config ya inicializada (USDC ${usdcMint}).`);
   } else {
-    usdcMint = process.env.USDC_MINT ? address(process.env.USDC_MINT) : await createMockUsdc(client);
+    usdcMint = process.env.USDC_MINT ? address(process.env.USDC_MINT) : await createMockUsdc(client, faucet);
     const [programData] = await getProgramDerivedAddress({
       programAddress: BPF_LOADER_UPGRADEABLE,
       seeds: [getAddressEncoder().encode(FIDETOK_PROGRAM_ADDRESS)],
@@ -62,15 +83,18 @@ async function main() {
     console.log(`init_config: ${explorerTx(await send(client, [init]))}`);
   }
 
-  // USDC mock para el fiduciario (liquidez del pool y distribuciones de demo).
+  // SOL para que el faucet patrocine fees y USDC mock para el fiduciario (liquidez y distribuciones).
+  const { value: faucetBalance } = await client.rpc.getBalance(faucet.address).send();
+  const fund: Instruction[] =
+    faucetBalance < SOL / 2n ? [getTransferSolInstruction({ source: payer, destination: faucet.address, amount: SOL })] : [];
   if (!process.env.USDC_MINT) {
     const [adminUsdc] = await findAssociatedTokenPda({ owner: admin, mint: usdcMint, tokenProgram: TOKEN_PROGRAM_ADDRESS });
-    const fund = [
+    fund.push(
       getCreateAssociatedTokenIdempotentInstruction({ payer, owner: admin, mint: usdcMint, ata: adminUsdc }),
-      getMintToInstruction({ mint: usdcMint, token: adminUsdc, mintAuthority: payer, amount: 1_000_000n * USDC }),
-    ];
-    console.log(`USDC mock al fiduciario: ${explorerTx(await send(client, fund))}`);
+      getMintToInstruction({ mint: usdcMint, token: adminUsdc, mintAuthority: faucet, amount: 1_000_000n * USDC }),
+    );
   }
+  if (fund.length > 0) console.log(`Fondeo de faucet y fiduciario: ${explorerTx(await send(client, fund))}`);
 
   const mints: Record<string, Address> = {};
   if (process.argv.includes("--demo")) {
@@ -96,28 +120,49 @@ async function main() {
     config,
     admin,
     usdcMint,
+    faucet: faucet.address,
     pythUsdcUsd: PYTH_USDC_USD_PRICE_ACCOUNT,
     demoMints: mints,
   };
-  await mkdir(new URL("../../../deployments/", import.meta.url), { recursive: true });
-  await writeFile(new URL("../../../deployments/devnet.json", import.meta.url), JSON.stringify(deployment, null, 2) + "\n");
-  console.log("Listo: deployments/devnet.json", deployment);
+  await writeFile(new URL("devnet.json", DEPLOYMENTS), JSON.stringify(deployment, null, 2) + "\n");
+  console.log("\nListo: deployments/devnet.json");
+  console.log("\nPara app/.env.local (y Vercel):");
+  console.log(`  NEXT_PUBLIC_USDC_MINT=${usdcMint}`);
+  console.log(`  ADMIN_WALLET=${admin}`);
+  console.log("  FAUCET_KEYPAIR=<contenido de deployments/faucet-keypair.json>");
 }
 
-async function createMockUsdc(client: Awaited<ReturnType<typeof createFideTokClient>>): Promise<Address> {
+/** Keypair dedicado del faucet: se genera una vez y se guarda en formato Solana CLI (64 bytes). */
+async function loadOrCreateFaucet(): Promise<KeyPairSigner> {
+  const exists = await access(FAUCET_FILE).then(
+    () => true,
+    () => false,
+  );
+  if (exists) {
+    const bytes = JSON.parse(await readFile(FAUCET_FILE, "utf8")) as number[];
+    return createKeyPairSignerFromBytes(Uint8Array.from(bytes));
+  }
+  const secret = randomBytes(32);
+  const signer = await createKeyPairSignerFromPrivateKeyBytes(secret, true);
+  const keypair = [...secret, ...getAddressEncoder().encode(signer.address)];
+  await writeFile(FAUCET_FILE, JSON.stringify(keypair), { mode: 0o600 });
+  return signer;
+}
+
+async function createMockUsdc(client: Client, faucet: KeyPairSigner): Promise<Address> {
   const mint = await generateKeyPairSigner();
   const space = BigInt(getMintSize());
   const lamports = await client.rpc.getMinimumBalanceForRentExemption(space).send();
   const ixs = [
     getCreateAccountInstruction({ payer: client.payer, newAccount: mint, lamports, space, programAddress: TOKEN_PROGRAM_ADDRESS }),
-    getInitializeMint2Instruction({ mint: mint.address, decimals: USDC_DECIMALS, mintAuthority: client.payer.address }),
+    getInitializeMint2Instruction({ mint: mint.address, decimals: USDC_DECIMALS, mintAuthority: faucet.address }),
   ];
   console.log(`USDC mock ${mint.address}: ${explorerTx(await send(client, ixs))}`);
   return mint.address;
 }
 
 async function createDemoFideicomiso(
-  client: Awaited<ReturnType<typeof createFideTokClient>>,
+  client: Client,
   usdcMint: Address,
   demo: { name: string; symbol: string; assetType: AssetType; registro: string },
 ): Promise<Address> {
@@ -135,7 +180,7 @@ async function createDemoFideicomiso(
     assetType: demo.assetType,
     cuitFideicomiso: "30-71234567-8",
     registro: demo.registro,
-    contratoUri: `${APP_URL}/fideicomisos/${mint.address}/contrato`,
+    contratoUri: `${APP_URL}/verificar/${mint.address}`,
     contractSha256: await sha256(contract),
     valuationUsd: 1_000_000n,
     pricePerToken: 100n * USDC,

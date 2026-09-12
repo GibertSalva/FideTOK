@@ -1,0 +1,13 @@
+{
+  "name": "fidetok",
+  "private": true,
+  "packageManager": "pnpm@11.12.0",
+  "scripts": {
+    "build:programs": "anchor build --arch v0",
+    "test:programs": "cargo test -p fidetok_hook --test test_flujos",
+    "codegen": "pnpm --filter @fidetok/client codegen",
+    "sdk": "pnpm --filter @fidetok/client build",
+    "dev": "pnpm sdk && pnpm --filter app dev",
+    "build": "pnpm --filter app build"
+  }
+}

@@ -10,6 +10,7 @@ test-ledger
 client/dist
 .vercel
 .claude/*.lock
+deployments/*keypair*.json
 .next
 next-env.d.ts
 # client/src/generated se commitea: Vercel no tiene target/ para correr Codama.
