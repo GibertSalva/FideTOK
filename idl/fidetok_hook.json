@@ -1,0 +1,174 @@
+{
+  "address": "Dtu3n9sQwYX9ibEU81q5hbP2VRN5XoWpuMLi2NuUCfqm",
+  "metadata": {
+    "name": "fidetok_hook",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "FideTOK: transfer hook que exige KYC (whitelist) en cada transferencia"
+  },
+  "instructions": [
+    {
+      "name": "execute",
+      "docs": [
+        "Se ejecuta en cada transferencia de certificados. Es el cerrojo de la oferta privada (CNV):",
+        "origen y destino tienen que tener KYC aprobado en FideTOK."
+      ],
+      "discriminator": [
+        105,
+        37,
+        101,
+        197,
+        75,
+        251,
+        102,
+        26
+      ],
+      "accounts": [
+        {
+          "name": "source_token"
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "destination_token"
+        },
+        {
+          "name": "owner"
+        },
+        {
+          "name": "extra_account_meta_list"
+        },
+        {
+          "name": "fidetok_program",
+          "address": "CqtJAJUo7MyE25UpVEfMP8NBJUFMDY5UKn4foUsGbVcG"
+        },
+        {
+          "name": "source_whitelist"
+        },
+        {
+          "name": "destination_whitelist"
+        },
+        {
+          "name": "fideicomiso"
+        }
+      ],
+      "args": [
+        {
+          "name": "_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "initialize_extra_account_meta_list",
+      "docs": [
+        "Registra las cuentas extra del hook para un mint. El contenido es fijo,",
+        "asi que cualquiera puede inicializarlo sin riesgo."
+      ],
+      "discriminator": [
+        92,
+        197,
+        174,
+        197,
+        41,
+        124,
+        19,
+        3
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "extra_account_meta_list",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  120,
+                  116,
+                  114,
+                  97,
+                  45,
+                  97,
+                  99,
+                  99,
+                  111,
+                  117,
+                  110,
+                  116,
+                  45,
+                  109,
+                  101,
+                  116,
+                  97,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "NoEstaTransfiriendo",
+      "msg": "El hook solo se ejecuta durante una transferencia de Token-2022"
+    },
+    {
+      "code": 6001,
+      "name": "EmisorSinKyc",
+      "msg": "El emisor no tiene KYC aprobado en FideTOK"
+    },
+    {
+      "code": 6002,
+      "name": "ReceptorSinKyc",
+      "msg": "El receptor no tiene KYC aprobado en FideTOK: la oferta es privada (CNV)"
+    },
+    {
+      "code": 6003,
+      "name": "ExtranjeroNoPermitido",
+      "msg": "Activo rural: la Ley 26.737 no permite transferir a extranjeros"
+    },
+    {
+      "code": 6004,
+      "name": "TransferenciasBloqueadas",
+      "msg": "Hay una distribucion de renta en curso: transferencias bloqueadas"
+    },
+    {
+      "code": 6005,
+      "name": "FideicomisoInvalido",
+      "msg": "Fideicomiso invalido"
+    },
+    {
+      "code": 6006,
+      "name": "MintInvalido",
+      "msg": "El mint no usa este transfer hook"
+    },
+    {
+      "code": 6007,
+      "name": "CuentaInvalida",
+      "msg": "Cuenta extra invalida"
+    }
+  ]
+}

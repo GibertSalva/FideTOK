@@ -1,0 +1,15 @@
+.anchor
+.DS_Store
+target
+**/*.rs.bk
+node_modules
+test-ledger
+.yarn
+.surfpool
+.env.local
+client/dist
+.vercel
+.claude/*.lock
+.next
+next-env.d.ts
+# client/src/generated se commitea: Vercel no tiene target/ para correr Codama.

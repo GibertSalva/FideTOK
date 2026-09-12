@@ -1,0 +1,3601 @@
+{
+  "address": "CqtJAJUo7MyE25UpVEfMP8NBJUFMDY5UKn4foUsGbVcG",
+  "metadata": {
+    "name": "fidetok",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "FideTOK: tokenizacion de fideicomisos (programa nucleo)"
+  },
+  "instructions": [
+    {
+      "name": "add_liquidity",
+      "discriminator": [
+        181,
+        157,
+        89,
+        67,
+        143,
+        182,
+        52,
+        72
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "fideicomiso",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  102,
+                  105,
+                  100,
+                  101,
+                  105,
+                  99,
+                  111,
+                  109,
+                  105,
+                  115,
+                  111
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "pool",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint",
+          "writable": true,
+          "relations": [
+            "fideicomiso",
+            "pool"
+          ]
+        },
+        {
+          "name": "usdc_mint",
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "admin_usdc_account",
+          "writable": true
+        },
+        {
+          "name": "usdc_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "fideicomiso"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "pool_cp_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "pool_usdc_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        },
+        {
+          "name": "usdc_token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "cp_amount",
+          "type": "u64"
+        },
+        {
+          "name": "usdc_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "add_to_whitelist",
+      "docs": [
+        "Flujo 2: habilita una wallet con KYC aprobado."
+      ],
+      "discriminator": [
+        157,
+        211,
+        52,
+        54,
+        144,
+        81,
+        5,
+        55
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "whitelist_entry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  119,
+                  104,
+                  105,
+                  116,
+                  101,
+                  108,
+                  105,
+                  115,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "wallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "wallet",
+          "type": "pubkey"
+        },
+        {
+          "name": "kyc_commitment",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "residency",
+          "type": {
+            "defined": {
+              "name": "Residency"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "buy_primary",
+      "docs": [
+        "Flujo 3: suscripcion primaria de certificados con USDC."
+      ],
+      "discriminator": [
+        89,
+        86,
+        227,
+        49,
+        41,
+        118,
+        66,
+        248
+      ],
+      "accounts": [
+        {
+          "name": "investor",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "fideicomiso",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  102,
+                  105,
+                  100,
+                  101,
+                  105,
+                  99,
+                  111,
+                  109,
+                  105,
+                  115,
+                  111
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "investor_whitelist",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  119,
+                  104,
+                  105,
+                  116,
+                  101,
+                  108,
+                  105,
+                  115,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "investor"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint",
+          "writable": true,
+          "relations": [
+            "fideicomiso"
+          ]
+        },
+        {
+          "name": "investor_cp_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "investor"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "usdc_mint",
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "investor_usdc_account",
+          "writable": true
+        },
+        {
+          "name": "usdc_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "fideicomiso"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "price_update"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        },
+        {
+          "name": "usdc_token_program"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "cp_amount",
+          "type": "u64"
+        },
+        {
+          "name": "max_usdc",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "close_distribution",
+      "discriminator": [
+        238,
+        70,
+        219,
+        176,
+        69,
+        243,
+        141,
+        230
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "fideicomiso",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  102,
+                  105,
+                  100,
+                  101,
+                  105,
+                  99,
+                  111,
+                  109,
+                  105,
+                  115,
+                  111
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "fideicomiso.mint",
+                "account": "Fideicomiso"
+              }
+            ]
+          },
+          "relations": [
+            "distribution"
+          ]
+        },
+        {
+          "name": "distribution",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  105,
+                  115,
+                  116,
+                  114,
+                  105,
+                  98,
+                  117,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "fideicomiso"
+              },
+              {
+                "kind": "account",
+                "path": "distribution.index",
+                "account": "Distribution"
+              }
+            ]
+          }
+        },
+        {
+          "name": "usdc_mint",
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "distribution_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "distribution"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "admin_usdc_account",
+          "writable": true
+        },
+        {
+          "name": "usdc_token_program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_fideicomiso",
+      "docs": [
+        "Flujo 1: emite el mint Token-2022 del fideicomiso con metadata legal y transfer hook."
+      ],
+      "discriminator": [
+        198,
+        253,
+        152,
+        177,
+        232,
+        10,
+        18,
+        17
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "originador"
+        },
+        {
+          "name": "fideicomiso",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  102,
+                  105,
+                  100,
+                  101,
+                  105,
+                  99,
+                  111,
+                  109,
+                  105,
+                  115,
+                  111
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "usdc_mint",
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "usdc_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "fideicomiso"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        },
+        {
+          "name": "usdc_token_program"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": {
+              "name": "CreateFideicomisoArgs"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "create_pool",
+      "docs": [
+        "Flujo 4: pool de liquidez privado cotizado al NAV."
+      ],
+      "discriminator": [
+        233,
+        146,
+        209,
+        142,
+        207,
+        104,
+        64,
+        188
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "fideicomiso",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  102,
+                  105,
+                  100,
+                  101,
+                  105,
+                  99,
+                  111,
+                  109,
+                  105,
+                  115,
+                  111
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "pool_whitelist",
+          "docs": [
+            "El pool es una cuenta de la plataforma: entra a la whitelist para poder operar con el hook."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  119,
+                  104,
+                  105,
+                  116,
+                  101,
+                  108,
+                  105,
+                  115,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint",
+          "relations": [
+            "fideicomiso"
+          ]
+        },
+        {
+          "name": "usdc_mint",
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "pool_cp_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "pool_usdc_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        },
+        {
+          "name": "usdc_token_program"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "spread_bps",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "init_config",
+      "docs": [
+        "Configuracion global. Solo la upgrade authority del programa; designa al fiduciario (admin)."
+      ],
+      "discriminator": [
+        23,
+        235,
+        115,
+        232,
+        168,
+        96,
+        1,
+        231
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "usdc_mint"
+        },
+        {
+          "name": "usdc_token_program"
+        },
+        {
+          "name": "program",
+          "address": "CqtJAJUo7MyE25UpVEfMP8NBJUFMDY5UKn4foUsGbVcG"
+        },
+        {
+          "name": "program_data"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "admin",
+          "type": "pubkey"
+        },
+        {
+          "name": "max_oracle_age_secs",
+          "type": "u64"
+        },
+        {
+          "name": "max_depeg_bps",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "pay_dividend",
+      "docs": [
+        "Paga la parte de un tenedor. La firma el admin (reparto en lote) o el propio tenedor (claim)."
+      ],
+      "discriminator": [
+        83,
+        88,
+        75,
+        60,
+        118,
+        104,
+        51,
+        42
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "docs": [
+            "El admin (reparto en lote) o el propio tenedor (claim)."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "fideicomiso",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  102,
+                  105,
+                  100,
+                  101,
+                  105,
+                  99,
+                  111,
+                  109,
+                  105,
+                  115,
+                  111
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          },
+          "relations": [
+            "distribution"
+          ]
+        },
+        {
+          "name": "distribution",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  105,
+                  115,
+                  116,
+                  114,
+                  105,
+                  98,
+                  117,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "fideicomiso"
+              },
+              {
+                "kind": "account",
+                "path": "distribution.index",
+                "account": "Distribution"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint",
+          "relations": [
+            "fideicomiso"
+          ]
+        },
+        {
+          "name": "usdc_mint",
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "holder"
+        },
+        {
+          "name": "holder_cp_account",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "holder"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "holder_usdc_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "holder"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "payout",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  97,
+                  121,
+                  111,
+                  117,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "distribution"
+              },
+              {
+                "kind": "account",
+                "path": "holder"
+              }
+            ]
+          }
+        },
+        {
+          "name": "distribution_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "distribution"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        },
+        {
+          "name": "usdc_token_program"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "revoke_whitelist",
+      "discriminator": [
+        127,
+        172,
+        18,
+        22,
+        238,
+        159,
+        208,
+        231
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "whitelist_entry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  119,
+                  104,
+                  105,
+                  116,
+                  101,
+                  108,
+                  105,
+                  115,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "wallet"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "wallet",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "start_distribution",
+      "docs": [
+        "Flujo 5: distribucion de renta con tipo de cambio declarado."
+      ],
+      "discriminator": [
+        118,
+        230,
+        215,
+        75,
+        83,
+        2,
+        163,
+        35
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "fideicomiso",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  102,
+                  105,
+                  100,
+                  101,
+                  105,
+                  99,
+                  111,
+                  109,
+                  105,
+                  115,
+                  111
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint",
+          "relations": [
+            "fideicomiso"
+          ]
+        },
+        {
+          "name": "distribution",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  105,
+                  115,
+                  116,
+                  114,
+                  105,
+                  98,
+                  117,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "fideicomiso"
+              },
+              {
+                "kind": "account",
+                "path": "fideicomiso.distribution_count",
+                "account": "Fideicomiso"
+              }
+            ]
+          }
+        },
+        {
+          "name": "usdc_mint",
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "admin_usdc_account",
+          "writable": true
+        },
+        {
+          "name": "distribution_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "distribution"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        },
+        {
+          "name": "usdc_token_program"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "total_usdc",
+          "type": "u64"
+        },
+        {
+          "name": "ars_per_usd",
+          "type": "u64"
+        },
+        {
+          "name": "fx_source",
+          "type": {
+            "defined": {
+              "name": "FxSource"
+            }
+          }
+        },
+        {
+          "name": "fx_timestamp",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "swap",
+      "discriminator": [
+        248,
+        198,
+        158,
+        145,
+        225,
+        117,
+        135,
+        200
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "fideicomiso",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  102,
+                  105,
+                  100,
+                  101,
+                  105,
+                  99,
+                  111,
+                  109,
+                  105,
+                  115,
+                  111
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "pool",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint",
+          "relations": [
+            "fideicomiso",
+            "pool"
+          ]
+        },
+        {
+          "name": "usdc_mint",
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "user_whitelist",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  119,
+                  104,
+                  105,
+                  116,
+                  101,
+                  108,
+                  105,
+                  115,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "pool_whitelist",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  119,
+                  104,
+                  105,
+                  116,
+                  101,
+                  108,
+                  105,
+                  115,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_cp_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "user_usdc_account",
+          "writable": true
+        },
+        {
+          "name": "pool_cp_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "pool_usdc_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "pool"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "price_update"
+        },
+        {
+          "name": "hook_program",
+          "address": "Dtu3n9sQwYX9ibEU81q5hbP2VRN5XoWpuMLi2NuUCfqm"
+        },
+        {
+          "name": "extra_account_metas",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  120,
+                  116,
+                  114,
+                  97,
+                  45,
+                  97,
+                  99,
+                  99,
+                  111,
+                  117,
+                  110,
+                  116,
+                  45,
+                  109,
+                  101,
+                  116,
+                  97,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                191,
+                151,
+                183,
+                18,
+                245,
+                60,
+                123,
+                10,
+                248,
+                144,
+                74,
+                78,
+                133,
+                197,
+                32,
+                136,
+                226,
+                117,
+                17,
+                139,
+                74,
+                159,
+                90,
+                179,
+                247,
+                222,
+                201,
+                17,
+                47,
+                27,
+                8,
+                12
+              ]
+            }
+          }
+        },
+        {
+          "name": "fidetok_program",
+          "address": "CqtJAJUo7MyE25UpVEfMP8NBJUFMDY5UKn4foUsGbVcG"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+        },
+        {
+          "name": "usdc_token_program"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "side",
+          "type": {
+            "defined": {
+              "name": "SwapSide"
+            }
+          }
+        },
+        {
+          "name": "cp_amount",
+          "type": "u64"
+        },
+        {
+          "name": "limit_usdc",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "update_config",
+      "discriminator": [
+        29,
+        158,
+        252,
+        191,
+        10,
+        83,
+        219,
+        99
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "max_oracle_age_secs",
+          "type": "u64"
+        },
+        {
+          "name": "max_depeg_bps",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "update_nav",
+      "docs": [
+        "Publica el valor cuotaparte (NAV) que usa el pool de liquidez."
+      ],
+      "discriminator": [
+        56,
+        16,
+        234,
+        109,
+        155,
+        165,
+        5,
+        0
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "fideicomiso",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  102,
+                  105,
+                  100,
+                  101,
+                  105,
+                  99,
+                  111,
+                  109,
+                  105,
+                  115,
+                  111
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "fideicomiso.mint",
+                "account": "Fideicomiso"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "nav_per_token",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Config",
+      "discriminator": [
+        155,
+        12,
+        170,
+        224,
+        30,
+        250,
+        204,
+        130
+      ]
+    },
+    {
+      "name": "Distribution",
+      "discriminator": [
+        176,
+        85,
+        17,
+        11,
+        13,
+        194,
+        18,
+        1
+      ]
+    },
+    {
+      "name": "Fideicomiso",
+      "discriminator": [
+        68,
+        73,
+        71,
+        243,
+        53,
+        150,
+        244,
+        92
+      ]
+    },
+    {
+      "name": "Payout",
+      "discriminator": [
+        69,
+        45,
+        245,
+        131,
+        218,
+        101,
+        158,
+        228
+      ]
+    },
+    {
+      "name": "Pool",
+      "discriminator": [
+        241,
+        154,
+        109,
+        4,
+        17,
+        177,
+        109,
+        188
+      ]
+    },
+    {
+      "name": "WhitelistEntry",
+      "discriminator": [
+        51,
+        70,
+        173,
+        81,
+        219,
+        192,
+        234,
+        62
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "DistribucionCerrada",
+      "discriminator": [
+        156,
+        18,
+        150,
+        139,
+        169,
+        27,
+        57,
+        129
+      ]
+    },
+    {
+      "name": "DistribucionIniciada",
+      "discriminator": [
+        84,
+        89,
+        172,
+        177,
+        121,
+        165,
+        153,
+        112
+      ]
+    },
+    {
+      "name": "DividendoPagado",
+      "discriminator": [
+        137,
+        223,
+        198,
+        60,
+        10,
+        94,
+        211,
+        98
+      ]
+    },
+    {
+      "name": "FideicomisoCreado",
+      "discriminator": [
+        236,
+        235,
+        237,
+        69,
+        173,
+        207,
+        73,
+        59
+      ]
+    },
+    {
+      "name": "InversorHabilitado",
+      "discriminator": [
+        37,
+        45,
+        37,
+        167,
+        48,
+        195,
+        169,
+        218
+      ]
+    },
+    {
+      "name": "InversorRevocado",
+      "discriminator": [
+        191,
+        77,
+        13,
+        185,
+        159,
+        15,
+        149,
+        8
+      ]
+    },
+    {
+      "name": "NavActualizado",
+      "discriminator": [
+        156,
+        63,
+        82,
+        210,
+        195,
+        100,
+        27,
+        100
+      ]
+    },
+    {
+      "name": "Suscripcion",
+      "discriminator": [
+        45,
+        120,
+        178,
+        177,
+        248,
+        182,
+        197,
+        218
+      ]
+    },
+    {
+      "name": "SwapEjecutado",
+      "discriminator": [
+        50,
+        181,
+        143,
+        45,
+        108,
+        250,
+        208,
+        142
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "NoAutorizado",
+      "msg": "Solo el fiduciario (admin) puede ejecutar esta accion"
+    },
+    {
+      "code": 6001,
+      "name": "SinKyc",
+      "msg": "La wallet no tiene KYC aprobado"
+    },
+    {
+      "code": 6002,
+      "name": "KycRevocado",
+      "msg": "El KYC de esta wallet fue revocado"
+    },
+    {
+      "code": 6003,
+      "name": "ExtranjeroNoPermitido",
+      "msg": "Activo rural: la Ley 26.737 no permite inversores extranjeros"
+    },
+    {
+      "code": 6004,
+      "name": "SupplyExcedido",
+      "msg": "Supera el tope de certificados del fideicomiso"
+    },
+    {
+      "code": 6005,
+      "name": "LimiteDePrecio",
+      "msg": "El precio supera el limite indicado"
+    },
+    {
+      "code": 6006,
+      "name": "MontoInvalido",
+      "msg": "Monto invalido"
+    },
+    {
+      "code": 6007,
+      "name": "ParametroInvalido",
+      "msg": "Parametro invalido"
+    },
+    {
+      "code": 6008,
+      "name": "Overflow",
+      "msg": "Overflow aritmetico"
+    },
+    {
+      "code": 6009,
+      "name": "TransferenciasBloqueadas",
+      "msg": "Hay una distribucion en curso: transferencias y suscripciones bloqueadas"
+    },
+    {
+      "code": 6010,
+      "name": "DistribucionCerrada",
+      "msg": "La distribucion ya esta cerrada"
+    },
+    {
+      "code": 6011,
+      "name": "LiquidezInsuficiente",
+      "msg": "Liquidez insuficiente en el pool"
+    },
+    {
+      "code": 6012,
+      "name": "OraculoDesactualizado",
+      "msg": "Precio del oraculo desactualizado"
+    },
+    {
+      "code": 6013,
+      "name": "UsdcDespegado",
+      "msg": "USDC perdio la paridad con el dolar: operaciones pausadas"
+    },
+    {
+      "code": 6014,
+      "name": "OraculoPocoConfiable",
+      "msg": "Intervalo de confianza del oraculo demasiado amplio"
+    },
+    {
+      "code": 6015,
+      "name": "OraculoInvalido",
+      "msg": "Cuenta de oraculo invalida"
+    },
+    {
+      "code": 6016,
+      "name": "NavFueraDeRango",
+      "msg": "Variacion de NAV fuera de rango"
+    },
+    {
+      "code": 6017,
+      "name": "SpreadInvalido",
+      "msg": "Spread invalido"
+    },
+    {
+      "code": 6018,
+      "name": "TextoInvalido",
+      "msg": "Texto demasiado largo o vacio"
+    },
+    {
+      "code": 6019,
+      "name": "TipoDeCambioInvalido",
+      "msg": "Tipo de cambio invalido"
+    },
+    {
+      "code": 6020,
+      "name": "SinTenencia",
+      "msg": "El tenedor no tiene certificados"
+    }
+  ],
+  "types": [
+    {
+      "name": "AssetType",
+      "docs": [
+        "Tipo de activo subyacente del fideicomiso."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Inmueble"
+          },
+          {
+            "name": "Rural"
+          },
+          {
+            "name": "Creditos"
+          },
+          {
+            "name": "Otro"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Config",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "docs": [
+              "Wallet del fiduciario (administrador de la plataforma)."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "usdc_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "max_oracle_age_secs",
+            "docs": [
+              "Antiguedad maxima aceptada del precio Pyth USDC/USD."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "max_depeg_bps",
+            "docs": [
+              "Desvio maximo de USDC contra el dolar antes de pausar operaciones."
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreateFideicomisoArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "docs": [
+              "URI del JSON de metadata (lo sirve la app)."
+            ],
+            "type": "string"
+          },
+          {
+            "name": "asset_type",
+            "type": {
+              "defined": {
+                "name": "AssetType"
+              }
+            }
+          },
+          {
+            "name": "cuit_fideicomiso",
+            "type": "string"
+          },
+          {
+            "name": "registro",
+            "docs": [
+              "Matricula o inscripcion registral del activo, si aplica."
+            ],
+            "type": "string"
+          },
+          {
+            "name": "contrato_uri",
+            "docs": [
+              "Enlace al contrato firmado (acceso restringido a inversores con KYC)."
+            ],
+            "type": "string"
+          },
+          {
+            "name": "contract_sha256",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "valuation_usd",
+            "type": "u64"
+          },
+          {
+            "name": "price_per_token",
+            "type": "u64"
+          },
+          {
+            "name": "max_supply",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DistribucionCerrada",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "distribution",
+            "type": "pubkey"
+          },
+          {
+            "name": "paid_usdc",
+            "type": "u64"
+          },
+          {
+            "name": "devuelto",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DistribucionIniciada",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "distribution",
+            "type": "pubkey"
+          },
+          {
+            "name": "fideicomiso",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_usdc",
+            "type": "u64"
+          },
+          {
+            "name": "supply_snapshot",
+            "type": "u64"
+          },
+          {
+            "name": "ars_per_usd",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Distribution",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "fideicomiso",
+            "type": "pubkey"
+          },
+          {
+            "name": "index",
+            "type": "u32"
+          },
+          {
+            "name": "total_usdc",
+            "type": "u64"
+          },
+          {
+            "name": "supply_snapshot",
+            "type": "u64"
+          },
+          {
+            "name": "paid_usdc",
+            "type": "u64"
+          },
+          {
+            "name": "paid_count",
+            "type": "u32"
+          },
+          {
+            "name": "ars_per_usd",
+            "docs": [
+              "Pesos por dolar con 4 decimales (1530.0000 = 15_300_000)."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "fx_source",
+            "type": {
+              "defined": {
+                "name": "FxSource"
+              }
+            }
+          },
+          {
+            "name": "fx_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "closed",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DividendoPagado",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "distribution",
+            "type": "pubkey"
+          },
+          {
+            "name": "holder",
+            "type": "pubkey"
+          },
+          {
+            "name": "tokens",
+            "type": "u64"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Fideicomiso",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "originador",
+            "docs": [
+              "Wallet del fiduciante que origino el fideicomiso."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "asset_type",
+            "type": {
+              "defined": {
+                "name": "AssetType"
+              }
+            }
+          },
+          {
+            "name": "restrict_foreign",
+            "docs": [
+              "Ley 26.737 de Tierras Rurales: sin inversores extranjeros si el activo es rural."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "price_per_token",
+            "docs": [
+              "Precio de suscripcion primaria por certificado, en unidades base de USDC."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "nav_per_token",
+            "docs": [
+              "Valor cuotaparte publicado por el fiduciario, en unidades base de USDC."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "nav_updated_at",
+            "type": "i64"
+          },
+          {
+            "name": "max_supply",
+            "type": "u64"
+          },
+          {
+            "name": "sold",
+            "type": "u64"
+          },
+          {
+            "name": "valuation_usd",
+            "type": "u64"
+          },
+          {
+            "name": "contract_sha256",
+            "docs": [
+              "sha256 del contrato de fideicomiso firmado (PDF)."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "transfers_locked",
+            "docs": [
+              "true mientras hay una distribucion abierta: congela saldos para el reparto."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "distribution_count",
+            "type": "u32"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FideicomisoCreado",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "fideicomiso",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "asset_type",
+            "type": {
+              "defined": {
+                "name": "AssetType"
+              }
+            }
+          },
+          {
+            "name": "max_supply",
+            "type": "u64"
+          },
+          {
+            "name": "price_per_token",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FxSource",
+      "docs": [
+        "Fuente declarada del tipo de cambio ARS/USD de una distribucion."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "OficialBna"
+          },
+          {
+            "name": "Mep"
+          },
+          {
+            "name": "Otro"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InversorHabilitado",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "residency",
+            "type": {
+              "defined": {
+                "name": "Residency"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "InversorRevocado",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "NavActualizado",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "fideicomiso",
+            "type": "pubkey"
+          },
+          {
+            "name": "nav_anterior",
+            "type": "u64"
+          },
+          {
+            "name": "nav_nuevo",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Payout",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "distribution",
+            "type": "pubkey"
+          },
+          {
+            "name": "holder",
+            "type": "pubkey"
+          },
+          {
+            "name": "tokens",
+            "type": "u64"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "paid_at",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pool",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "fideicomiso",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "spread_bps",
+            "type": "u16"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Residency",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Argentina"
+          },
+          {
+            "name": "Extranjero"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Suscripcion",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "fideicomiso",
+            "type": "pubkey"
+          },
+          {
+            "name": "investor",
+            "type": "pubkey"
+          },
+          {
+            "name": "cp_amount",
+            "type": "u64"
+          },
+          {
+            "name": "usdc_paid",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SwapEjecutado",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "fideicomiso",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "side",
+            "type": {
+              "defined": {
+                "name": "SwapSide"
+              }
+            }
+          },
+          {
+            "name": "cp_amount",
+            "type": "u64"
+          },
+          {
+            "name": "usdc_amount",
+            "type": "u64"
+          },
+          {
+            "name": "nav",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SwapSide",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Vender"
+          },
+          {
+            "name": "Comprar"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WhitelistEntry",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "kyc_commitment",
+            "docs": [
+              "sha256(dni | cuit | nonce). Los datos personales nunca van on-chain."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "residency",
+            "type": {
+              "defined": {
+                "name": "Residency"
+              }
+            }
+          },
+          {
+            "name": "kind",
+            "type": {
+              "defined": {
+                "name": "WhitelistKind"
+              }
+            }
+          },
+          {
+            "name": "revoked",
+            "type": "bool"
+          },
+          {
+            "name": "approved_at",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WhitelistKind",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Inversor"
+          },
+          {
+            "name": "Protocolo"
+          }
+        ]
+      }
+    }
+  ],
+  "constants": [
+    {
+      "name": "CONFIG_SEED",
+      "type": "bytes",
+      "value": "[99, 111, 110, 102, 105, 103]"
+    },
+    {
+      "name": "CP_DECIMALS",
+      "docs": [
+        "Los certificados de participacion son indivisibles: 1 token = 1 CP."
+      ],
+      "type": "u8",
+      "value": "0"
+    },
+    {
+      "name": "DISTRIBUTION_SEED",
+      "type": "bytes",
+      "value": "[100, 105, 115, 116, 114, 105, 98, 117, 116, 105, 111, 110]"
+    },
+    {
+      "name": "EXTRA_ACCOUNT_METAS_SEED",
+      "docs": [
+        "Seed de la cuenta con las cuentas extra del transfer hook (interface SPL)."
+      ],
+      "type": "bytes",
+      "value": "[101, 120, 116, 114, 97, 45, 97, 99, 99, 111, 117, 110, 116, 45, 109, 101, 116, 97, 115]"
+    },
+    {
+      "name": "FIDEICOMISO_SEED",
+      "type": "bytes",
+      "value": "[102, 105, 100, 101, 105, 99, 111, 109, 105, 115, 111]"
+    },
+    {
+      "name": "HOOK_PROGRAM_ID",
+      "docs": [
+        "Programa `fidetok_hook`. Va por constante para no crear una dependencia circular entre crates."
+      ],
+      "type": "pubkey",
+      "value": "Dtu3n9sQwYX9ibEU81q5hbP2VRN5XoWpuMLi2NuUCfqm"
+    },
+    {
+      "name": "MAX_DEPEG_LIMIT_BPS",
+      "docs": [
+        "Desvio maximo configurable de USDC contra el dolar: 10%."
+      ],
+      "type": "u16",
+      "value": "1000"
+    },
+    {
+      "name": "MAX_NAV_CHANGE_BPS",
+      "docs": [
+        "Variacion maxima del NAV por publicacion: 50%, para frenar errores de tipeo."
+      ],
+      "type": "u64",
+      "value": "5000"
+    },
+    {
+      "name": "MAX_ORACLE_CONF_BPS",
+      "docs": [
+        "Intervalo de confianza maximo aceptado del oraculo: 1% del precio."
+      ],
+      "type": "u64",
+      "value": "100"
+    },
+    {
+      "name": "MAX_SPREAD_BPS",
+      "docs": [
+        "Spread maximo del pool: 10%."
+      ],
+      "type": "u16",
+      "value": "1000"
+    },
+    {
+      "name": "PAYOUT_SEED",
+      "type": "bytes",
+      "value": "[112, 97, 121, 111, 117, 116]"
+    },
+    {
+      "name": "POOL_SEED",
+      "type": "bytes",
+      "value": "[112, 111, 111, 108]"
+    },
+    {
+      "name": "WHITELIST_SEED",
+      "type": "bytes",
+      "value": "[119, 104, 105, 116, 101, 108, 105, 115, 116]"
+    }
+  ]
+}

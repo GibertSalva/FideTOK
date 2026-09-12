@@ -1,0 +1,9 @@
+{
+  "idl": "../idl/fidetok_hook.json",
+  "scripts": {
+    "js": {
+      "from": "@codama/renderers-js",
+      "args": [".", { "importExtension": "js", "generatedFolder": "src/generated/fidetok_hook" }]
+    }
+  }
+}

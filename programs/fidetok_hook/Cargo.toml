@@ -1,0 +1,45 @@
+[package]
+name = "fidetok_hook"
+version = "0.1.0"
+description = "FideTOK: transfer hook que exige KYC (whitelist) en cada transferencia"
+edition.workspace = true
+rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "fidetok_hook"
+
+[features]
+default = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+no-log-ix-name = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+anchor-debug = []
+custom-heap = []
+custom-panic = []
+
+
+[dependencies]
+anchor-lang = "1.2.0"
+anchor-spl = "1.2.0"
+spl-token-2022-interface = "2"
+spl-transfer-hook-interface = "2.1"
+spl-tlv-account-resolution = "0.11"
+spl-discriminator = "0.5"
+fidetok = { path = "../fidetok", features = ["cpi"] }
+
+# Los tests E2E de ambos programas viven en este crate (depende de fidetok sin ciclos).
+[dev-dependencies]
+litesvm = "0.10.0"
+solana-account = "3"
+solana-keypair = "3.0.1"
+solana-message = "3.0.1"
+solana-signer = "3.0.0"
+solana-transaction = "3.0.2"
+pyth-solana-receiver-sdk = "2.0.0"
+spl-token-metadata-interface = "0.8"
+
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(target_os, values("solana"))'] }
