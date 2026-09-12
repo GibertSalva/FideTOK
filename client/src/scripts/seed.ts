@@ -84,9 +84,11 @@ async function main() {
   }
 
   // SOL para que el faucet patrocine fees y USDC mock para el fiduciario (liquidez y distribuciones).
+  // 0,5 SOL por wallet alcanza para la demo y entra en lo que deja el deploy (~1,5 SOL).
+  const funding = SOL / 2n;
   const { value: faucetBalance } = await client.rpc.getBalance(faucet.address).send();
   const fund: Instruction[] =
-    faucetBalance < SOL / 2n ? [getTransferSolInstruction({ source: payer, destination: faucet.address, amount: SOL })] : [];
+    faucetBalance < funding / 2n ? [getTransferSolInstruction({ source: payer, destination: faucet.address, amount: funding })] : [];
   if (!process.env.USDC_MINT) {
     const [adminUsdc] = await findAssociatedTokenPda({ owner: admin, mint: usdcMint, tokenProgram: TOKEN_PROGRAM_ADDRESS });
     fund.push(
@@ -97,7 +99,7 @@ async function main() {
   // El fiduciario (Phantom) paga el rent de fideicomisos, whitelists, pools y distribuciones.
   if (admin !== payer.address) {
     const { value: adminBalance } = await client.rpc.getBalance(admin).send();
-    if (adminBalance < SOL / 2n) fund.push(getTransferSolInstruction({ source: payer, destination: admin, amount: SOL }));
+    if (adminBalance < funding / 2n) fund.push(getTransferSolInstruction({ source: payer, destination: admin, amount: funding }));
   }
   if (fund.length > 0) console.log(`Fondeo de faucet y fiduciario: ${explorerTx(await send(client, fund))}`);
 
