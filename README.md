@@ -67,12 +67,13 @@ cargo test -p fidetok_hook --test test_flujos
 cd client && pnpm install && pnpm codegen && pnpm check
 ```
 
-Deploy a devnet (necesita ~12 SOL de pico entre buffer y rent):
+Deploy a devnet. El SOL de devnet es gratis: se pide en faucet.solana.com (con GitHub) o a los mentores. Con los binarios optimizados por tamaño (`opt-level = "z"`: 517 KB + 170 KB), el pico es de ~8,4 SOL: el buffer de cada deploy se devuelve al terminar y quedan ~4,8 SOL de rent de los programas. El seed usa ~2 SOL más (faucet y fiduciario).
 
 ```sh
 solana config set --url devnet
-anchor deploy --provider.cluster devnet
-cd client && cp ../.env.local.example .env.local && pnpm seed --demo
+solana program deploy target/deploy/fidetok_hook.so --program-id target/deploy/fidetok_hook-keypair.json
+solana program deploy target/deploy/fidetok.so --program-id target/deploy/fidetok-keypair.json
+cd client && cp ../.env.local.example .env.local && ADMIN_WALLET=<wallet_del_fiduciario> pnpm seed
 pnpm attack <MINT_DEL_FIDEICOMISO>
 ```
 

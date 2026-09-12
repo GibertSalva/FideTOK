@@ -9,6 +9,8 @@ edition = "2021"
 rust-version = "1.89.0"
 
 [profile.release]
+# Optimizar por tamaño: el rent del deploy escala con el binario (651 KB -> 517 KB).
+opt-level = "z"
 overflow-checks = true
 lto = "fat"
 codegen-units = 1

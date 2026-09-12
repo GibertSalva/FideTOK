@@ -94,6 +94,11 @@ async function main() {
       getMintToInstruction({ mint: usdcMint, token: adminUsdc, mintAuthority: faucet, amount: 1_000_000n * USDC }),
     );
   }
+  // El fiduciario (Phantom) paga el rent de fideicomisos, whitelists, pools y distribuciones.
+  if (admin !== payer.address) {
+    const { value: adminBalance } = await client.rpc.getBalance(admin).send();
+    if (adminBalance < SOL / 2n) fund.push(getTransferSolInstruction({ source: payer, destination: admin, amount: SOL }));
+  }
   if (fund.length > 0) console.log(`Fondeo de faucet y fiduciario: ${explorerTx(await send(client, fund))}`);
 
   const mints: Record<string, Address> = {};
