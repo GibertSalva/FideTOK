@@ -18,7 +18,7 @@ import {
   Textarea,
 } from "@/components/ui";
 import { api } from "@/lib/api";
-import { ASSET_LABELS, explorer, type AssetKey } from "@/lib/config";
+import { ASSET_LABELS, explorer, HONORARIO_PCT, type AssetKey } from "@/lib/config";
 import { formatInt, formatMoney, formatUsdcMoney, shortAddress, usdcToBase } from "@/lib/format";
 import { useLoader } from "@/lib/hooks";
 import { describeError } from "@/lib/solana/errors";
@@ -320,6 +320,7 @@ function SolicitudForm({ onCreated }: { onCreated: () => Promise<void> }) {
           <DataRow k="Valuación" v={valuacion ? formatMoney(Number(valuacion)) : "—"} />
           <DataRow k="Precio por certificado" v={precio > 0 ? formatUsdcMoney(usdcToBase(precio)) : "—"} />
           <DataRow k="Total de la emisión" v={totalEmision > 0 ? `${formatMoney(totalEmision)} USDC` : "—"} />
+          <DataRow k="Honorario fiduciario" v={`${HONORARIO_PCT}% de cada distribución`} />
           <DataRow k="Contrato" v={contractHash ? "Cargado · sha256 calculado" : "Sin cargar"} />
         </div>
 

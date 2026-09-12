@@ -9,6 +9,14 @@ export const FIDETOK_PROGRAM = fidetok.FIDETOK_PROGRAM_ADDRESS;
 export const HOOK_PROGRAM = fidetokHook.FIDETOK_HOOK_PROGRAM_ADDRESS;
 export const PYTH_USDC_USD = PYTH_USDC_USD_PRICE_ACCOUNT;
 
+/**
+ * Honorario del fiduciario: lo que retiene la plataforma de cada distribucion de renta.
+ * Se descuenta antes de depositar en la boveda, asi que nunca entra al reparto y queda
+ * en la cuenta del administrador. Es el unico lugar donde se define la tasa.
+ */
+export const HONORARIO_BPS = 500;
+export const HONORARIO_PCT = HONORARIO_BPS / 100;
+
 export const USDC_DECIMALS = 6;
 export const USDC_UNIT = 1_000_000n;
 

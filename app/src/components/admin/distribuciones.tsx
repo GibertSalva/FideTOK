@@ -9,7 +9,7 @@ import { useMemo, useState } from "react";
 import { useFideTok } from "@/components/providers";
 import { Badge, Button, Card, Field, Input, LegalTag, Notice, Select } from "@/components/ui";
 import { api } from "@/lib/api";
-import { explorer, usdcMint, USDC_UNIT } from "@/lib/config";
+import { explorer, HONORARIO_BPS, HONORARIO_PCT, usdcMint, USDC_UNIT } from "@/lib/config";
 import type { FideicomisoPublico } from "@/lib/fideicomisos";
 import { formatArs, formatInt, formatUsdc, shortAddress } from "@/lib/format";
 import { useLoader } from "@/lib/hooks";
@@ -113,7 +113,10 @@ function NuevaDistribucion({ mint, onDone }: { mint: Address; onDone: () => Prom
   }, [client, mint]);
 
   const tipoCambio = Number(tc || fx.data?.venta || 0);
-  const totalUsdc = tipoCambio > 0 ? BigInt(Math.floor((Number(ars) / tipoCambio) * Number(USDC_UNIT))) : 0n;
+  const brutoUsdc = tipoCambio > 0 ? BigInt(Math.floor((Number(ars) / tipoCambio) * Number(USDC_UNIT))) : 0n;
+  const honorarioUsdc = (brutoUsdc * BigInt(HONORARIO_BPS)) / 10_000n;
+  // Se reparte el neto: el honorario nunca entra a la boveda de distribucion.
+  const totalUsdc = brutoUsdc - honorarioUsdc;
   const supply = data.data?.holders.reduce((acc, h) => acc + h.amount, 0n) ?? 0n;
   const preview = useMemo(
     () =>
@@ -259,7 +262,15 @@ function NuevaDistribucion({ mint, onDone }: { mint: Address; onDone: () => Prom
           <Input type="number" min={0} step="any" value={tc} placeholder={fx.data ? String(fx.data.venta) : ""} onChange={(e) => setTc(e.target.value)} />
         </Field>
         <div className="flex flex-col justify-end gap-1 rounded-card bg-surface-2 px-4 py-3">
-          <span className="text-xs text-dim">A distribuir en USDC</span>
+          <div className="flex items-baseline justify-between gap-3 text-xs text-mute">
+            <span>Renta bruta</span>
+            <span className="tabular-nums text-bone">{formatUsdc(brutoUsdc)}</span>
+          </div>
+          <div className="flex items-baseline justify-between gap-3 text-xs text-mute">
+            <span>Honorario fiduciario · {HONORARIO_PCT}%</span>
+            <span className="tabular-nums text-down">− {formatUsdc(honorarioUsdc)}</span>
+          </div>
+          <span className="mt-1.5 text-xs text-dim">Neto a distribuir</span>
           <span className="text-lg font-semibold text-bone tabular-nums">{formatUsdc(totalUsdc)}</span>
           <span className="text-xs text-dim">
             {formatArs(Number(ars) || 0)} ÷ {tipoCambio || "—"}
