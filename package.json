@@ -1,7 +1,7 @@
 {
   "name": "fidetok",
   "private": true,
-  "packageManager": "pnpm@11.12.0",
+  "packageManager": "pnpm@11.26.0",
   "scripts": {
     "build:programs": "anchor build --arch v0",
     "test:programs": "cargo test -p fidetok_hook --test test_flujos",

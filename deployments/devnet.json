@@ -1,0 +1,11 @@
+{
+  "cluster": "devnet",
+  "fidetokProgram": "CqtJAJUo7MyE25UpVEfMP8NBJUFMDY5UKn4foUsGbVcG",
+  "hookProgram": "Dtu3n9sQwYX9ibEU81q5hbP2VRN5XoWpuMLi2NuUCfqm",
+  "config": "Bc5FzV35DGhozSWZbXrZ66wGKBcGj98aRWYitjzaDXEB",
+  "admin": "J3yq3U6uRs4QBShispU4dFcSTPX61hrxau1v2ZYkYpK1",
+  "usdcMint": "J65L8aq3fNcjjkZFHb6vbQfJ49FFyyDdaEuQo4pzLUVH",
+  "faucet": "9G3RDLwyfQKG1u3QG4ckqtR8VYEfh7C7BTgetgA2DM6S",
+  "pythUsdcUsd": "Dpw1EAVrSB1ibxiDQyTAW6Zip3J4Btk2x4SgApQCeFbX",
+  "demoMints": {}
+}
