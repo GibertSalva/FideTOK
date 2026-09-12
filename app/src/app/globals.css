@@ -44,26 +44,27 @@
 }
 
 /*
- * Atmosfera del fondo: dos resplandores radiales muy suaves y un grano fino.
- * Todo generado, sin archivos. Las capas son de background, no pseudo-elementos,
- * asi no pelean con el apilado de la app. El punto mas claro no supera #1F2835,
- * asi que los contrastes de texto quedan intactos.
+ * Fondo: trama de plano catastral. Grilla fina de 24px con lineas maestras cada
+ * 120px, como una mensura, mas una viñeta que oscurece los bordes para que la
+ * atencion caiga al centro. Todo en gradientes: ni un archivo, ni una request.
+ * Las tarjetas son opacas, asi que la trama nunca se lee a traves del contenido.
  */
 body {
   background-color: var(--color-ink);
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.04'/%3E%3C/svg%3E"),
-    radial-gradient(58rem 32rem at 88% -10%, rgb(90 130 190 / 0.07), transparent 70%),
-    radial-gradient(46rem 30rem at -6% 14%, rgb(220 214 95 / 0.035), transparent 70%);
-  background-repeat: repeat, no-repeat, no-repeat;
-  background-size: 180px 180px, auto, auto;
-  background-attachment: scroll, fixed, fixed;
+    repeating-linear-gradient(to right, rgb(255 255 255 / 0.022) 0 1px, transparent 1px 24px),
+    repeating-linear-gradient(to bottom, rgb(255 255 255 / 0.022) 0 1px, transparent 1px 24px),
+    repeating-linear-gradient(to right, rgb(255 255 255 / 0.04) 0 1px, transparent 1px 120px),
+    repeating-linear-gradient(to bottom, rgb(255 255 255 / 0.04) 0 1px, transparent 1px 120px),
+    radial-gradient(125% 90% at 50% -10%, rgb(90 130 190 / 0.08), transparent 55%),
+    radial-gradient(100% 80% at 50% 100%, rgb(0 0 0 / 0.35), transparent 60%);
+  background-attachment: fixed;
   color: var(--color-bone);
   font-family: var(--font-plex-mono), ui-monospace, SFMono-Regular, monospace;
   -webkit-font-smoothing: antialiased;
 }
 
-/* El grano es decoracion: si el sistema pide mas contraste, se va. */
+/* La trama es decoracion: si el sistema pide mas contraste, se va. */
 @media (prefers-contrast: more) {
   body {
     background-image: none;
