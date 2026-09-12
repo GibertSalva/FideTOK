@@ -274,7 +274,7 @@ function Faucet({ onDone }: { onDone: () => Promise<void> }) {
       <div>
         <Kicker>Fondos de prueba · devnet</Kicker>
         <p className="mt-2 text-[12.5px] tracking-[0.02em] text-mute">
-          1.000 USDC de prueba y SOL para las fees, para recorrer la demo.
+          100.000 USDC de prueba y SOL para las fees. Podés pedir las veces que quieras.
         </p>
       </div>
       <div className="flex flex-col items-end gap-2">
