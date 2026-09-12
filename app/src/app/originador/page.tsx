@@ -19,7 +19,7 @@ import {
 } from "@/components/ui";
 import { api } from "@/lib/api";
 import { ASSET_LABELS, explorer, type AssetKey } from "@/lib/config";
-import { formatInt, formatMoney, shortAddress } from "@/lib/format";
+import { formatInt, formatMoney, formatUsdcMoney, shortAddress, usdcToBase } from "@/lib/format";
 import { useLoader } from "@/lib/hooks";
 import { describeError } from "@/lib/solana/errors";
 import { sha256Hex, uploadFile } from "@/lib/upload";
@@ -138,7 +138,6 @@ function SolicitudForm({ onCreated }: { onCreated: () => Promise<void> }) {
   // El panel lateral se actualiza mientras se escribe, como en el diseno.
   const [valuacion, setValuacion] = useState("");
   const [cantidad, setCantidad] = useState("");
-  const [precio, setPrecio] = useState("");
   const [step, setStep] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
@@ -178,7 +177,6 @@ function SolicitudForm({ onCreated }: { onCreated: () => Promise<void> }) {
       setContractHash(null);
       setValuacion("");
       setCantidad("");
-      setPrecio("");
       setDone(true);
       await onCreated();
     } catch (e) {
@@ -189,7 +187,13 @@ function SolicitudForm({ onCreated }: { onCreated: () => Promise<void> }) {
   }
 
   const certificados = Math.max(0, Math.floor(Number(cantidad) || 0));
-  const totalEmision = certificados * (Number(precio) || 0);
+  const montoValuado = Number(valuacion) || 0;
+  // El precio es consecuencia: repartir la valuacion entre los certificados.
+  // Se redondea a centavos, que es el grano con el que despues se cobra en USDC.
+  const precio = certificados > 0 && montoValuado > 0 ? Math.round((montoValuado / certificados) * 100) / 100 : 0;
+  const totalEmision = certificados * precio;
+  // Lo que el redondeo del centavo deja fuera de la valuacion declarada.
+  const desvio = montoValuado > 0 ? totalEmision - montoValuado : 0;
 
   return (
     <form onSubmit={submit} className="grid gap-3 pb-6 lg:grid-cols-[minmax(0,1fr)_minmax(300px,0.62fr)]">
@@ -254,17 +258,14 @@ function SolicitudForm({ onCreated }: { onCreated: () => Promise<void> }) {
             onChange={(e) => setCantidad(e.target.value)}
           />
         </Field>
-        <Field label="Precio por certificado (USDC)">
-          <Input
-            name="precio_usdc"
-            required
-            type="number"
-            min={0.000001}
-            step="any"
-            placeholder="100"
-            value={precio}
-            onChange={(e) => setPrecio(e.target.value)}
-          />
+        <Field
+          label="Precio por certificado (USDC)"
+          hint="Se calcula solo: valuación ÷ cantidad de certificados."
+        >
+          <input type="hidden" name="precio_usdc" value={precio || ""} />
+          <div className="flex h-11 w-full items-center rounded-pill bg-surface-2 px-4 text-[15px] tabular-nums text-bone">
+            {precio > 0 ? formatUsdcMoney(usdcToBase(precio)) : <span className="text-dim">—</span>}
+          </div>
         </Field>
         <Field label="Contrato de fideicomiso firmado (PDF)" hint="Su hash sha256 queda grabado en el token">
           <Input
@@ -282,6 +283,14 @@ function SolicitudForm({ onCreated }: { onCreated: () => Promise<void> }) {
         {contractHash && (
           <p className="break-all text-[11px] tracking-[0.04em] text-dim md:col-span-2">sha256: {contractHash}</p>
         )}
+        {Math.abs(desvio) >= 0.01 && (
+          <div className="md:col-span-2">
+            <Notice tone="warning">
+              Por el redondeo al centavo, la emisión suma {formatMoney(totalEmision)} contra una valuación de{" "}
+              {formatMoney(montoValuado)}. Ajustá la cantidad de certificados si querés que cierre exacto.
+            </Notice>
+          </div>
+        )}
         {error && (
           <div className="md:col-span-2">
             <Notice tone="danger">{error}</Notice>
@@ -293,7 +302,7 @@ function SolicitudForm({ onCreated }: { onCreated: () => Promise<void> }) {
           </div>
         )}
         <div className="md:col-span-2">
-          <Button type="submit" className="h-12 w-full md:w-auto" loading={step !== null}>
+          <Button type="submit" className="h-12 w-full md:w-auto" loading={step !== null} disabled={precio <= 0}>
             {step ?? "Enviar a auditoría"}
           </Button>
         </div>
@@ -309,7 +318,7 @@ function SolicitudForm({ onCreated }: { onCreated: () => Promise<void> }) {
         <div className="mt-7">
           <DataRow k="Bien" v={ASSET_LABELS[assetType]} />
           <DataRow k="Valuación" v={valuacion ? formatMoney(Number(valuacion)) : "—"} />
-          <DataRow k="Valor nominal" v={precio ? `$${precio} USDC` : "—"} />
+          <DataRow k="Precio por certificado" v={precio > 0 ? formatUsdcMoney(usdcToBase(precio)) : "—"} />
           <DataRow k="Total de la emisión" v={totalEmision > 0 ? `${formatMoney(totalEmision)} USDC` : "—"} />
           <DataRow k="Contrato" v={contractHash ? "Cargado · sha256 calculado" : "Sin cargar"} />
         </div>

@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { AssetTile, IconUsdc } from "@/components/icons";
 import { useFideTok, useSession } from "@/components/providers";
+import { useRol } from "@/components/roles";
 import { Display, Kicker, Meter, Notice, cn } from "@/components/ui";
 import { api } from "@/lib/api";
 import { ASSET_LABELS, type AssetKey } from "@/lib/config";
@@ -30,6 +31,7 @@ function valorCp(f: Fila) {
 export default function MercadoPage() {
   const client = useFideTok();
   const { me } = useSession();
+  const { rol } = useRol();
   const [filter, setFilter] = useState<AssetKey | "todos">("todos");
   const [query, setQuery] = useState("");
 
@@ -61,6 +63,8 @@ export default function MercadoPage() {
   );
 
   const kycOk = me?.kyc?.status === "aprobado";
+  // El administrador no suscribe: es quien aprueba las habilitaciones ajenas.
+  const avisarKyc = !kycOk && rol !== "administrador";
 
   return (
     <div className="flex flex-1 flex-col gap-8 py-10">
@@ -200,7 +204,7 @@ export default function MercadoPage() {
         </div>
       )}
 
-      {data && !kycOk && (
+      {data && avisarKyc && (
         <div className="flex flex-wrap items-center justify-between gap-4 rounded-card bg-surface px-6 py-5 shadow-card">
           <p className="text-[12.5px] tracking-[0.02em] text-mute">
             Para suscribir necesitás la verificación aprobada.
