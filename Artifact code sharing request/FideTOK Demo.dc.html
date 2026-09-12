@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#0B0B0A;color:#EDEAE0;font-family:'IBM Plex Mono',ui-monospace,monospace;-webkit-font-smoothing:antialiased}
+    a{color:#E8E000;text-decoration:none}
+    a:hover{color:#EDEAE0}
+    @keyframes tape{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    @keyframes blip{0%,55%{opacity:1}56%,100%{opacity:.15}}
+    input[type=range]{accent-color:#E8E000}
+    input,button,select{font-family:inherit}
+    input::placeholder{color:#55534C}
+    select option{background:#0B0B0A;color:#EDEAE0}
+  </style>
+</helmet>
+
+<div style="min-height:940px;background:#0B0B0A;display:flex;flex-direction:column;overflow:hidden">
+
+  <!-- ENTRADA -->
+  <sc-if value="{{ isEntry }}" hint-placeholder-val="{{ true }}">
+  <div style="flex:1;display:flex;flex-direction:column">
+    <div style="padding:40px 44px 0;display:flex;align-items:center;gap:12px">
+      <span style="width:14px;height:14px;background:#E8E000;display:block"></span>
+      <span style="font-family:'Archivo Black',sans-serif;font-size:20px;letter-spacing:-.01em">FIDETOK</span>
+      <span style="margin-left:14px;font-size:11.5px;letter-spacing:.18em;color:#7C7A70">FIDEICOMISOS TOKENIZADOS · OFERTA PRIVADA · CNV</span>
+    </div>
+    <div style="padding:52px 44px 0;max-width:1040px">
+      <div style="font-family:'Archivo Black',sans-serif;font-size:96px;line-height:.9;letter-spacing:-.05em;text-transform:uppercase">Un bien real,<br>mil dueños<br>posibles.</div>
+      <div style="margin-top:26px;font-size:13.5px;line-height:1.7;letter-spacing:.04em;color:#7C7A70;max-width:620px">DE UN LADO SE CARGA EL BIEN Y SE ESTRUCTURA EL FIDEICOMISO. DEL OTRO SE VERIFICA LA IDENTIDAD Y SE SUSCRIBEN CUOTAPARTES. ELEGÍ POR DÓNDE ENTRAR.</div>
+    </div>
+    <div style="margin-top:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));border-top:1px solid #2A2A26">
+      <div onClick="{{ enterFiduciante }}" style="padding:38px 44px 44px;border-right:1px solid #2A2A26;cursor:pointer;min-height:290px;display:flex;flex-direction:column" style-hover="background:#15150F">
+        <div style="font-size:12px;letter-spacing:.2em;color:#E8E000">01</div>
+        <div style="font-family:'Archivo Black',sans-serif;font-size:58px;line-height:.95;letter-spacing:-.04em;margin-top:18px;text-transform:uppercase">Traigo<br>un bien</div>
+        <div style="margin-top:18px;font-size:12.5px;line-height:1.7;letter-spacing:.04em;color:#7C7A70">SOY FIDUCIANTE. CARGO EL LEGAJO DEL INMUEBLE, DEL CAMPO O DE LA CARTERA, DEFINO LA EMISIÓN Y LO MANDO A REVISIÓN DEL FIDUCIARIO.</div>
+        <div style="margin-top:auto;padding-top:22px;font-size:12px;letter-spacing:.18em;color:#E8E000">ENTRAR AL LEGAJO →</div>
+      </div>
+      <div onClick="{{ enterInversor }}" style="padding:38px 44px 44px;cursor:pointer;min-height:290px;display:flex;flex-direction:column" style-hover="background:#15150F">
+        <div style="font-size:12px;letter-spacing:.2em;color:#E8E000">02</div>
+        <div style="font-family:'Archivo Black',sans-serif;font-size:58px;line-height:.95;letter-spacing:-.04em;margin-top:18px;text-transform:uppercase">Quiero<br>invertir</div>
+        <div style="margin-top:18px;font-size:12.5px;line-height:1.7;letter-spacing:.04em;color:#7C7A70">SOY INVERSOR. VERIFICO MI IDENTIDAD, DECLARO EL ORIGEN DE LOS FONDOS, CONECTO LA WALLET Y SUSCRIBO CUOTAPARTES.</div>
+        <div style="margin-top:auto;padding-top:22px;font-size:12px;letter-spacing:.18em;color:#E8E000">CREAR CUENTA →</div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- APP -->
+  <sc-if value="{{ isApp }}" hint-placeholder-val="{{ false }}">
+  <div style="flex:1;display:flex;flex-direction:column">
+
+    <div style="background:#E8E000;color:#0B0B0A;height:38px;display:flex;align-items:center;overflow:hidden;flex:0 0 38px">
+      <div style="display:flex;white-space:nowrap;animation:tape 34s linear infinite;font-size:13px;font-weight:600;letter-spacing:.1em">
+        <sc-for list="{{ tape }}" as="t" hint-placeholder-count="5"><span style="padding-right:40px">{{ t.text }}</span></sc-for>
+        <sc-for list="{{ tape }}" as="t" hint-placeholder-count="5"><span style="padding-right:40px">{{ t.text }}</span></sc-for>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:stretch;border-bottom:1px solid #2A2A26;min-height:52px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:10px;padding:0 20px;border-right:1px solid #2A2A26">
+        <span style="width:12px;height:12px;background:#E8E000;display:block"></span>
+        <span style="font-family:'Archivo Black',sans-serif;font-size:17px;letter-spacing:-.01em">FIDETOK</span>
+        <span style="font-size:10.5px;letter-spacing:.16em;color:#7C7A70;border:1px solid #2A2A26;padding:3px 7px">{{ roleLabel }}</span>
+      </div>
+      <div style="display:flex;align-items:stretch">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+          <div onClick="{{ t.go }}" style="{{ t.style }}">{{ t.label }}</div>
+        </sc-for>
+      </div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:14px;padding:0 20px;border-left:1px solid #2A2A26;font-size:12px;letter-spacing:.08em;color:#7C7A70">
+        <span style="display:flex;align-items:center;gap:7px;color:#EDEAE0"><span style="width:8px;height:8px;background:#E8E000;display:block;animation:blip 1.4s steps(1) infinite"></span>EN VIVO</span>
+        <span>{{ walletLabel }}</span>
+        <span>{{ kycLabel }}</span>
+        <span onClick="{{ exit }}" style="cursor:pointer;border:1px solid #2A2A26;padding:6px 10px" style-hover="border-color:#E8E000;color:#E8E000">CAMBIAR ROL</span>
+      </div>
+    </div>
+
+    <!-- WIZARD (fiduciante e inversor comparten el motor) -->
+    <sc-if value="{{ isWizard }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column">
+      <div style="display:flex;flex-wrap:wrap;gap:0;border-bottom:1px solid #2A2A26">
+        <sc-for list="{{ rail }}" as="r" hint-placeholder-count="5">
+          <div onClick="{{ r.go }}" style="{{ r.style }}"><span style="color:#7C7A70">{{ r.num }}</span> {{ r.label }}</div>
+        </sc-for>
+      </div>
+
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.62fr);flex:1">
+        <div style="padding:30px 34px 34px;border-right:1px solid #2A2A26;min-width:0">
+          <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">{{ step.kicker }}</div>
+          <div style="font-family:'Archivo Black',sans-serif;font-size:44px;line-height:.98;letter-spacing:-.035em;margin-top:12px;text-transform:uppercase">{{ step.title }}</div>
+          <div style="margin-top:12px;font-size:12.5px;line-height:1.7;letter-spacing:.04em;color:#7C7A70;max-width:640px">{{ step.hint }}</div>
+
+          <!-- tarjetas de elección (tipo de bien / categoría de inversor) -->
+          <sc-if value="{{ step.hasCards }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:26px">
+              <sc-for list="{{ cards }}" as="c" hint-placeholder-count="4">
+                <div onClick="{{ c.pick }}" style="{{ c.style }}">
+                  <div style="display:flex;justify-content:space-between;gap:10px;font-size:11px;letter-spacing:.18em">{{ c.num }}<span>{{ c.badge }}</span></div>
+                  <div style="font-family:'Archivo Black',sans-serif;font-size:26px;line-height:1.05;letter-spacing:-.02em;margin-top:14px;text-transform:uppercase">{{ c.title }}</div>
+                  <div style="margin-top:10px;font-size:11.5px;line-height:1.65;letter-spacing:.04em;opacity:.72">{{ c.desc }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <!-- grilla de campos -->
+          <sc-if value="{{ step.hasFields }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:18px 16px;margin-top:28px">
+              <sc-for list="{{ fields }}" as="f" hint-placeholder-count="8">
+                <div style="{{ f.wrap }}">
+                  <sc-if value="{{ f.isField }}" hint-placeholder-val="{{ true }}">
+                    <div style="font-size:10.5px;letter-spacing:.16em;color:#7C7A70">{{ f.label }}</div>
+                  </sc-if>
+                  <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}">
+                    <input value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="{{ f.ph }}" style="width:100%;height:42px;margin-top:7px;background:#15150F;border:1px solid #2A2A26;color:#EDEAE0;font-size:14px;padding:0 12px;outline:none" style-focus="border-color:#E8E000">
+                  </sc-if>
+                  <sc-if value="{{ f.isSelect }}" hint-placeholder-val="{{ false }}">
+                    <select value="{{ f.value }}" onChange="{{ f.onChange }}" style="width:100%;height:42px;margin-top:7px;background:#15150F;border:1px solid #2A2A26;color:#EDEAE0;font-size:14px;padding:0 10px;outline:none;appearance:none">
+                      <sc-for list="{{ f.options }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.v }}</option></sc-for>
+                    </select>
+                  </sc-if>
+                  <sc-if value="{{ f.isFile }}" hint-placeholder-val="{{ false }}">
+                    <div onClick="{{ f.onChange }}" style="{{ f.fileStyle }}">{{ f.fileLabel }}</div>
+                  </sc-if>
+                  <sc-if value="{{ f.isCheck }}" hint-placeholder-val="{{ false }}">
+                    <div onClick="{{ f.onChange }}" style="display:flex;gap:12px;align-items:flex-start;cursor:pointer;padding:4px 0">
+                      <span style="{{ f.boxStyle }}">{{ f.tick }}</span>
+                      <span style="font-size:12.5px;line-height:1.6;letter-spacing:.03em;color:#EDEAE0">{{ f.text }}</span>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <!-- wallet -->
+          <sc-if value="{{ step.isWallet }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:28px;display:flex;flex-wrap:wrap;gap:16px;align-items:center">
+              <div onClick="{{ connectWallet }}" style="{{ walletBtn }}">{{ walletBtnLabel }}</div>
+              <div style="font-size:11.5px;letter-spacing:.14em;color:#7C7A70">CUSTODIA PROPIA · LA CUOTAPARTE QUEDA A TU NOMBRE</div>
+            </div>
+            <sc-if value="{{ walletOn }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:22px;border:1px solid #2A2A26;background:#15150F;padding:22px 24px;max-width:520px">
+                <div style="font-size:10.5px;letter-spacing:.18em;color:#7C7A70">DIRECCIÓN VINCULADA</div>
+                <div style="font-family:'Archivo Black',sans-serif;font-size:34px;letter-spacing:-.02em;margin-top:8px;color:#E8E000">7xKX…9Pq2</div>
+                <div style="margin-top:10px;font-size:11.5px;letter-spacing:.12em;color:#7C7A70">FIRMA VERIFICADA · SIN FONDOS BLOQUEADOS</div>
+              </div>
+            </sc-if>
+          </sc-if>
+
+          <!-- contrato -->
+          <sc-if value="{{ step.isContract }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:26px;border:1px solid #2A2A26;background:#15150F;padding:24px;max-height:230px;overflow:auto;font-size:12.5px;line-height:1.8;letter-spacing:.03em;color:#B9B6AC">
+              <div style="color:#EDEAE0;font-weight:600;letter-spacing:.16em;font-size:11.5px">CONTRATO DE ADHESIÓN · FIDEICOMISO FINANCIERO PRIVADO</div>
+              <div style="margin-top:14px">PRIMERA: El adherente suscribe certificados de participación emitidos por el fiduciario, quien administra los bienes fideicomitidos en los términos del Código Civil y Comercial, arts. 1666 y siguientes.</div>
+              <div style="margin-top:10px">SEGUNDA: Los certificados se registran en cadena y solo pueden transferirse entre cuentas con verificación de identidad aprobada.</div>
+              <div style="margin-top:10px">TERCERA: La renta se distribuye según la periodicidad definida en el suplemento de emisión, neta del honorario fiduciario.</div>
+              <div style="margin-top:10px">CUARTA: La presente es una oferta privada. No constituye oferta pública en los términos de la Ley 26.831.</div>
+            </div>
+          </sc-if>
+
+          <!-- revisión del legajo -->
+          <sc-if value="{{ step.isReview }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:26px;border-top:1px solid #2A2A26">
+              <sc-for list="{{ review }}" as="r" hint-placeholder-count="6">
+                <div style="display:flex;justify-content:space-between;gap:20px;padding:13px 0;border-bottom:1px solid #2A2A26">
+                  <span style="font-size:11.5px;letter-spacing:.14em;color:#7C7A70">{{ r.k }}</span>
+                  <span style="font-size:14px;font-weight:600;text-align:right">{{ r.v }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <div style="display:flex;gap:14px;margin-top:32px;flex-wrap:wrap">
+            <sc-if value="{{ canBack }}" hint-placeholder-val="{{ false }}">
+              <div onClick="{{ back }}" style="border:1px solid #3A3A34;height:54px;padding:0 26px;display:grid;place-items:center;font-size:12.5px;letter-spacing:.18em;cursor:pointer" style-hover="border-color:#E8E000;color:#E8E000">ATRÁS</div>
+            </sc-if>
+            <div onClick="{{ next }}" style="background:#E8E000;color:#0B0B0A;height:54px;padding:0 34px;display:grid;place-items:center;font-size:12.5px;font-weight:600;letter-spacing:.18em;cursor:pointer" style-hover="background:#EDEAE0">{{ nextLabel }}</div>
+          </div>
+        </div>
+
+        <!-- lateral: resumen vivo -->
+        <div style="padding:30px 30px 34px;background:#15150F;display:flex;flex-direction:column;min-width:0">
+          <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">{{ side.kicker }}</div>
+          <div style="font-family:'Archivo Black',sans-serif;font-size:clamp(46px,6vw,74px);line-height:.88;letter-spacing:-.045em;margin-top:14px;color:#E8E000;font-variant-numeric:tabular-nums">{{ side.big }}</div>
+          <div style="margin-top:8px;font-size:11.5px;letter-spacing:.14em;color:#7C7A70">{{ side.bigSub }}</div>
+          <div style="margin-top:26px;border-top:1px solid #2A2A26">
+            <sc-for list="{{ side.rows }}" as="r" hint-placeholder-count="5">
+              <div style="display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid #2A2A26">
+                <span style="font-size:11px;letter-spacing:.14em;color:#7C7A70">{{ r.k }}</span>
+                <span style="font-size:13.5px;font-weight:600;text-align:right">{{ r.v }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="margin-top:auto;padding-top:24px;font-size:11px;line-height:1.7;letter-spacing:.1em;color:#55534C">{{ side.foot }}</div>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ESTADO DEL LEGAJO / CERTIFICADO -->
+    <sc-if value="{{ isEstado }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column">
+      <sc-if value="{{ enRevision }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:44px;max-width:960px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="width:10px;height:10px;background:#E8E000;display:block;animation:blip 1.2s steps(1) infinite"></span>
+            <span style="font-size:11.5px;letter-spacing:.2em;color:#E8E000">LEGAJO EN REVISIÓN DEL FIDUCIARIO</span>
+          </div>
+          <div style="font-family:'Archivo Black',sans-serif;font-size:clamp(52px,7vw,92px);line-height:.9;letter-spacing:-.045em;margin-top:20px;text-transform:uppercase">{{ emision.nombre }}</div>
+          <div style="margin-top:22px;font-size:13px;line-height:1.8;letter-spacing:.06em;color:#7C7A70;max-width:620px">EL FIDUCIARIO CONTROLA TÍTULO, GRAVÁMENES Y DOCUMENTACIÓN RESPALDATORIA. CUANDO APRUEBA, SE EMITEN LOS CERTIFICADOS Y EL FIDEICOMISO SALE A MERCADO.</div>
+          <div style="margin-top:34px;display:flex;gap:14px;flex-wrap:wrap">
+            <div onClick="{{ goPanel }}" style="border:1px solid #E8E000;color:#E8E000;height:54px;padding:0 28px;display:grid;place-items:center;font-size:12.5px;letter-spacing:.18em;cursor:pointer" style-hover="background:#E8E000;color:#0B0B0A">VER EL PANEL DEL FIDUCIARIO →</div>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ emitido }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:44px;background:#E8E000;color:#0B0B0A">
+          <div style="font-size:11.5px;font-weight:600;letter-spacing:.2em">CERTIFICADOS EMITIDOS · REGISTRADOS EN CADENA</div>
+          <div style="font-family:'Archivo Black',sans-serif;font-size:clamp(52px,7vw,88px);line-height:.9;letter-spacing:-.045em;margin-top:18px;text-transform:uppercase">{{ emision.nombre }}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:42px;margin-top:34px">
+            <div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:.18em">CUOTAPARTES</div>
+              <div style="font-family:'Archivo Black',sans-serif;font-size:56px;line-height:1;margin-top:6px;font-variant-numeric:tabular-nums">{{ emision.certs }}</div>
+            </div>
+            <div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:.18em">VALOR NOMINAL</div>
+              <div style="font-family:'Archivo Black',sans-serif;font-size:56px;line-height:1;margin-top:6px;font-variant-numeric:tabular-nums">{{ emision.nominal }}</div>
+            </div>
+            <div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:.18em">HASH DE EMISIÓN</div>
+              <div style="font-family:'Archivo Black',sans-serif;font-size:56px;line-height:1;margin-top:6px">{{ emision.hash }}</div>
+            </div>
+          </div>
+          <div onClick="{{ goMercadoMinted }}" style="margin-top:38px;align-self:flex-start;border:1px solid #0B0B0A;height:56px;padding:0 30px;display:grid;place-items:center;font-size:12.5px;font-weight:600;letter-spacing:.18em;cursor:pointer" style-hover="background:#0B0B0A;color:#E8E000">YA COTIZA EN MERCADO · VER →</div>
+        </div>
+      </sc-if>
+    </div>
+    </sc-if>
+
+    <!-- MERCADO -->
+    <sc-if value="{{ isMercado }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;flex:1">
+      <div style="display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,1fr);border-bottom:1px solid #2A2A26">
+        <div style="padding:30px 34px 28px;border-right:1px solid #2A2A26;min-width:0">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <span style="background:#E8E000;color:#0B0B0A;font-size:11.5px;font-weight:600;letter-spacing:.18em;padding:5px 10px">DESTACADO {{ feat.num }}</span>
+            <span style="font-size:11.5px;letter-spacing:.18em;color:#7C7A70">{{ feat.kind }} · {{ feat.tag }}</span>
+          </div>
+          <div style="font-family:'Archivo Black',sans-serif;font-size:clamp(46px,5.6vw,76px);line-height:.94;letter-spacing:-.04em;margin-top:22px;text-transform:uppercase">{{ feat.name }}</div>
+          <div style="display:flex;align-items:flex-end;gap:30px;margin-top:26px;flex-wrap:wrap">
+            <div>
+              <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">USDC · CUOTAPARTE</div>
+              <div style="font-family:'Archivo Black',sans-serif;font-size:clamp(72px,9vw,118px);line-height:.82;letter-spacing:-.05em;color:#E8E000;font-variant-numeric:tabular-nums;margin-top:8px">{{ feat.price }}</div>
+            </div>
+            <div style="padding-bottom:10px">
+              <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">VARIACIÓN HOY</div>
+              <div style="font-family:'Archivo Black',sans-serif;font-size:40px;line-height:1;letter-spacing:-.03em;margin-top:8px"><span style="{{ feat.deltaStyle }}">{{ feat.delta }}</span></div>
+            </div>
+            <div style="padding-bottom:10px">
+              <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">RENTA ANUAL</div>
+              <div style="font-family:'Archivo Black',sans-serif;font-size:40px;line-height:1;letter-spacing:-.03em;margin-top:8px">{{ feat.renta }}</div>
+            </div>
+          </div>
+          <div style="margin-top:26px;display:flex;align-items:flex-end;gap:5px;height:104px;border-bottom:1px solid #2A2A26">
+            <sc-for list="{{ bars }}" as="b" hint-placeholder-count="12">
+              <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%"><div style="{{ b.style }}"></div></div>
+            </sc-for>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:10.5px;letter-spacing:.14em;color:#7C7A70">
+            <span>VALOR CUOTAPARTE · 12 MESES</span><span>MÍN {{ feat.low }} / MÁX {{ feat.high }}</span>
+          </div>
+          <div style="margin-top:22px">
+            <div style="height:16px;border:1px solid #EDEAE0;background:repeating-linear-gradient(135deg,#1A1A16 0 6px,#0B0B0A 6px 12px)"><div style="{{ feat.barStyle }}"></div></div>
+            <div style="display:flex;justify-content:space-between;gap:16px;margin-top:10px;font-size:12px;letter-spacing:.14em">
+              <span>{{ feat.pct }}% SUSCRIPTO</span><span style="color:#7C7A70">MÍNIMO {{ feat.min }}</span>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;min-width:0">
+          <sc-for list="{{ others }}" as="o" hint-placeholder-count="2">
+            <div onClick="{{ o.select }}" style="{{ o.card }}">
+              <div style="display:flex;justify-content:space-between;gap:14px;font-size:11.5px;letter-spacing:.18em;color:#7C7A70"><span>{{ o.num }} · {{ o.kind }}</span><span style="{{ o.deltaStyle }}">{{ o.delta }}</span></div>
+              <div style="font-family:'Archivo Black',sans-serif;font-size:26px;line-height:1.05;letter-spacing:-.02em;margin-top:12px;text-transform:uppercase">{{ o.name }}</div>
+              <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-top:18px">
+                <div style="font-family:'Archivo Black',sans-serif;font-size:60px;line-height:.85;letter-spacing:-.04em;font-variant-numeric:tabular-nums">{{ o.price }}</div>
+                <div style="text-align:right;font-size:12px;letter-spacing:.12em;color:#7C7A70;padding-bottom:6px">{{ o.pct }}%<br>SUSCRIPTO</div>
+              </div>
+              <div style="height:10px;border:1px solid #3A3A34;margin-top:16px"><div style="{{ o.barStyle }}"></div></div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="border-bottom:1px solid #2A2A26;background:#15150F">
+        <sc-if value="{{ needsKyc }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:20px 28px;padding:22px 34px">
+            <div style="flex:1 1 320px;min-width:280px">
+              <div style="font-size:11px;letter-spacing:.2em;color:#E8E000">VERIFICACIÓN PENDIENTE</div>
+              <div style="font-family:'Archivo Black',sans-serif;font-size:30px;line-height:1.1;margin-top:8px">Podés mirar el mercado, todavía no suscribir</div>
+              <div style="margin-top:8px;font-size:11.5px;letter-spacing:.12em;color:#7C7A70">LA SUSCRIPCIÓN EXIGE IDENTIDAD VALIDADA, LICITUD DE FONDOS Y CONTRATO FIRMADO.</div>
+            </div>
+            <div onClick="{{ goKyc }}" style="flex:1 1 260px;min-width:240px;background:#E8E000;color:#0B0B0A;height:56px;display:grid;place-items:center;font-size:13px;font-weight:600;letter-spacing:.18em;cursor:pointer" style-hover="background:#EDEAE0">COMPLETÁ TU VERIFICACIÓN →</div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ buying }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:26px 30px;padding:22px 34px">
+            <div style="flex:1 1 320px;min-width:300px">
+              <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">SUSCRIBIR · {{ feat.name }} · CUOTAPARTES</div>
+              <div style="display:flex;align-items:center;gap:14px;margin-top:12px">
+                <div onClick="{{ dec }}" style="width:42px;height:42px;border:1px solid #3A3A34;display:grid;place-items:center;font-size:20px;cursor:pointer;user-select:none" style-hover="border-color:#E8E000;color:#E8E000">−</div>
+                <input value="{{ qty }}" onChange="{{ onQty }}" style="width:132px;height:42px;background:#0B0B0A;border:1px solid #3A3A34;color:#EDEAE0;font-size:22px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums;outline:none">
+                <div onClick="{{ inc }}" style="width:42px;height:42px;border:1px solid #3A3A34;display:grid;place-items:center;font-size:20px;cursor:pointer;user-select:none" style-hover="border-color:#E8E000;color:#E8E000">+</div>
+              </div>
+            </div>
+            <div style="flex:0 0 auto">
+              <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">PRECIO UNITARIO</div>
+              <div style="font-family:'Archivo Black',sans-serif;font-size:34px;line-height:1;margin-top:8px;font-variant-numeric:tabular-nums">{{ feat.price }}</div>
+            </div>
+            <div style="flex:0 0 auto">
+              <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">TOTAL USDC</div>
+              <div style="font-family:'Archivo Black',sans-serif;font-size:34px;line-height:1;margin-top:8px;color:#E8E000;font-variant-numeric:tabular-nums">{{ total }}</div>
+            </div>
+            <div onClick="{{ confirm }}" style="flex:1 1 240px;min-width:220px;background:#E8E000;color:#0B0B0A;height:56px;display:grid;place-items:center;font-size:13px;font-weight:600;letter-spacing:.18em;cursor:pointer" style-hover="background:#EDEAE0">CONFIRMAR SUSCRIPCIÓN</div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ done }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:22px 26px;padding:22px 34px;background:#E8E000;color:#0B0B0A">
+            <div style="flex:1 1 340px;min-width:300px">
+              <div style="font-size:11px;font-weight:600;letter-spacing:.2em">ORDEN REGISTRADA EN CADENA</div>
+              <div style="font-family:'Archivo Black',sans-serif;font-size:32px;line-height:1.05;margin-top:8px;font-variant-numeric:tabular-nums">{{ qty }} × {{ feat.name }} · USDC {{ total }}</div>
+              <div style="font-size:11.5px;letter-spacing:.12em;margin-top:8px">TX {{ tx }} · LIQUIDA T+0 · CUSTODIA FIDUCIARIA</div>
+            </div>
+            <div onClick="{{ goPortafolio }}" style="flex:1 1 240px;min-width:220px;border:1px solid #0B0B0A;height:56px;display:grid;place-items:center;font-size:13px;font-weight:600;letter-spacing:.18em;cursor:pointer" style-hover="background:#0B0B0A;color:#E8E000">VER EN PORTAFOLIO →</div>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));border-bottom:1px solid #2A2A26">
+        <div style="padding:22px 34px;min-width:0">
+          <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">TOKENIZADO</div>
+          <div style="font-family:'Archivo Black',sans-serif;font-size:clamp(34px,3.6vw,50px);line-height:1;letter-spacing:-.035em;margin-top:8px;font-variant-numeric:tabular-nums">{{ mk.tokenizado }}</div>
+        </div>
+        <div style="padding:22px 34px;border-left:1px solid #2A2A26;min-width:0">
+          <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">INVERSORES HABILITADOS</div>
+          <div style="font-family:'Archivo Black',sans-serif;font-size:clamp(34px,3.6vw,50px);line-height:1;letter-spacing:-.035em;margin-top:8px;font-variant-numeric:tabular-nums">{{ mk.inversores }}</div>
+        </div>
+        <div style="padding:22px 34px;border-left:1px solid #2A2A26;min-width:0">
+          <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">RENTA REPARTIDA</div>
+          <div style="font-family:'Archivo Black',sans-serif;font-size:clamp(34px,3.6vw,50px);line-height:1;letter-spacing:-.035em;margin-top:8px;font-variant-numeric:tabular-nums;color:#E8E000">USDC 175.500</div>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- PORTAFOLIO -->
+    <sc-if value="{{ isPortafolio }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column">
+      <sc-if value="{{ needsKyc }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:20px 28px;padding:22px 34px;border-bottom:1px solid #2A2A26;background:#15150F">
+          <div style="flex:1 1 320px;min-width:280px">
+            <div style="font-size:11px;letter-spacing:.2em;color:#E8E000">CARTERA VACÍA · VERIFICACIÓN PENDIENTE</div>
+            <div style="font-family:'Archivo Black',sans-serif;font-size:30px;line-height:1.1;margin-top:8px">Todavía no tenés cuotapartes a tu nombre</div>
+          </div>
+          <div onClick="{{ goKyc }}" style="flex:1 1 260px;min-width:240px;background:#E8E000;color:#0B0B0A;height:56px;display:grid;place-items:center;font-size:13px;font-weight:600;letter-spacing:.18em;cursor:pointer" style-hover="background:#EDEAE0">COMPLETÁ TU VERIFICACIÓN →</div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ pf.hasRenta }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#E8E000;color:#0B0B0A;padding:18px 34px;display:flex;flex-wrap:wrap;align-items:center;gap:14px 26px">
+          <span style="font-size:11px;font-weight:600;letter-spacing:.2em">PRIMERA RENTA ACREDITADA</span>
+          <span style="font-family:'Archivo Black',sans-serif;font-size:32px;font-variant-numeric:tabular-nums">USDC {{ pf.rentaNueva }}</span>
+          <span style="font-size:11.5px;letter-spacing:.12em">{{ pf.rentaNota }}</span>
+        </div>
+      </sc-if>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));border-bottom:1px solid #2A2A26">
+        <div style="padding:30px 34px;min-width:0">
+          <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">VALOR DE CARTERA · USDC</div>
+          <div style="font-family:'Archivo Black',sans-serif;font-size:clamp(44px,5.2vw,76px);line-height:.9;letter-spacing:-.045em;margin-top:10px;color:#E8E000;font-variant-numeric:tabular-nums">{{ pf.total }}</div>
+        </div>
+        <div style="padding:30px 34px;border-left:1px solid #2A2A26;min-width:0">
+          <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">RENTA COBRADA</div>
+          <div style="font-family:'Archivo Black',sans-serif;font-size:clamp(44px,5.2vw,76px);line-height:.9;letter-spacing:-.045em;margin-top:10px;font-variant-numeric:tabular-nums">{{ pf.renta }}</div>
+        </div>
+        <div style="padding:30px 34px;border-left:1px solid #2A2A26;min-width:0">
+          <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">RESULTADO NO REALIZADO</div>
+          <div style="font-family:'Archivo Black',sans-serif;font-size:clamp(44px,5.2vw,76px);line-height:.9;letter-spacing:-.045em;margin-top:10px;font-variant-numeric:tabular-nums;color:{{ pf.pnlColor }}">{{ pf.pnl }}</div>
+        </div>
+      </div>
+      <div style="padding:26px 34px 0;font-size:11px;letter-spacing:.2em;color:#7C7A70">POSICIONES</div>
+      <div style="margin:16px 34px 0;border-top:1px solid #2A2A26">
+        <sc-for list="{{ pf.rows }}" as="r" hint-placeholder-count="3">
+          <div style="display:grid;grid-template-columns:44px minmax(0,1fr) 140px 170px 150px;align-items:center;gap:18px;padding:20px 4px;border-bottom:1px solid #2A2A26">
+            <div style="font-size:12px;font-weight:600;color:#7C7A70">{{ r.num }}</div>
+            <div style="min-width:0">
+              <div style="font-size:11px;letter-spacing:.18em;color:#7C7A70">{{ r.kind }}</div>
+              <div style="font-family:'Archivo Black',sans-serif;font-size:24px;letter-spacing:-.02em;margin-top:4px;text-transform:uppercase">{{ r.name }}</div>
+            </div>
+            <div>
+              <div style="font-size:10.5px;letter-spacing:.16em;color:#7C7A70">CUOTAPARTES</div>
+              <div style="font-size:24px;font-weight:600;margin-top:4px;font-variant-numeric:tabular-nums">{{ r.qty }}</div>
+            </div>
+            <div>
+              <div style="font-size:10.5px;letter-spacing:.16em;color:#7C7A70">VALOR USDC</div>
+              <div style="font-family:'Archivo Black',sans-serif;font-size:28px;margin-top:4px;font-variant-numeric:tabular-nums">{{ r.value }}</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:10.5px;letter-spacing:.16em;color:#7C7A70">PRÓXIMO PAGO</div>
+              <div style="font-size:14px;font-weight:600;margin-top:6px;letter-spacing:.06em">{{ r.pago }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- MI VERIFICACIÓN (ya aprobada) -->
+    <sc-if value="{{ isVerif }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column">
+      <div style="padding:30px 34px 26px;border-bottom:1px solid #2A2A26;display:flex;align-items:flex-end;justify-content:space-between;gap:26px;flex-wrap:wrap">
+        <div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="width:10px;height:10px;background:#8FD14F;display:block"></span>
+            <span style="font-size:11.5px;letter-spacing:.2em;color:#8FD14F">VERIFICACIÓN APROBADA</span>
+          </div>
+          <div style="font-family:'Archivo Black',sans-serif;font-size:clamp(40px,5vw,60px);line-height:.92;letter-spacing:-.04em;margin-top:16px;text-transform:uppercase">Mi<br>verificación</div>
+        </div>
+        <div onClick="{{ redoKyc }}" style="border:1px solid #3A3A34;height:52px;padding:0 26px;display:grid;place-items:center;font-size:12.5px;letter-spacing:.18em;cursor:pointer" style-hover="border-color:#E8E000;color:#E8E000">REHACER VERIFICACIÓN</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:0">
+        <div style="padding:26px 34px;border-right:1px solid #2A2A26;min-width:0">
+          <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">LEGAJO DEL INVERSOR</div>
+          <div style="margin-top:18px;border-top:1px solid #2A2A26">
+            <sc-for list="{{ side.rows }}" as="r" hint-placeholder-count="6">
+              <div style="display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid #2A2A26">
+                <span style="font-size:11px;letter-spacing:.14em;color:#7C7A70">{{ r.k }}</span>
+                <span style="font-size:14px;font-weight:600;text-align:right">{{ r.v }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="padding:26px 34px;background:#15150F;min-width:0">
+          <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">HABILITACIONES VIGENTES</div>
+          <div style="margin-top:18px;border-top:1px solid #2A2A26">
+            <sc-for list="{{ verif }}" as="r" hint-placeholder-count="5">
+              <div style="display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid #2A2A26">
+                <span style="font-size:11px;letter-spacing:.14em;color:#7C7A70">{{ r.k }}</span>
+                <span style="font-size:13.5px;font-weight:600;text-align:right;color:{{ r.c }}">{{ r.v }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="margin-top:24px;font-size:11px;line-height:1.7;letter-spacing:.1em;color:#55534C">LA VERIFICACIÓN VENCE A LOS 12 MESES O ANTE CAMBIO DE DOMICILIO FISCAL. LOS DOCUMENTOS QUEDAN CIFRADOS EN EL LEGAJO DEL FIDUCIARIO.</div>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- MIS EMISIONES -->
+    <sc-if value="{{ isEmisiones }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column">
+      <div style="padding:30px 34px 24px;border-bottom:1px solid #2A2A26;display:flex;align-items:flex-end;justify-content:space-between;gap:26px;flex-wrap:wrap">
+        <div style="font-family:'Archivo Black',sans-serif;font-size:clamp(40px,5vw,60px);line-height:.92;letter-spacing:-.04em;text-transform:uppercase">Mis<br>emisiones</div>
+        <div onClick="{{ newLegajo }}" style="background:#E8E000;color:#0B0B0A;height:52px;padding:0 26px;display:grid;place-items:center;font-size:12.5px;font-weight:600;letter-spacing:.18em;cursor:pointer" style-hover="background:#EDEAE0">+ NUEVO LEGAJO</div>
+      </div>
+      <div style="margin:0 34px;border-top:1px solid #2A2A26">
+        <sc-for list="{{ emisiones }}" as="e" hint-placeholder-count="2">
+          <div style="display:grid;grid-template-columns:44px minmax(0,1fr) 190px 180px 160px;align-items:center;gap:18px;padding:20px 4px;border-bottom:1px solid #2A2A26">
+            <div style="font-size:12px;font-weight:600;color:#7C7A70">{{ e.num }}</div>
+            <div style="min-width:0">
+              <div style="font-size:11px;letter-spacing:.18em;color:#7C7A70">{{ e.kind }}</div>
+              <div style="font-family:'Archivo Black',sans-serif;font-size:24px;letter-spacing:-.02em;margin-top:4px;text-transform:uppercase">{{ e.name }}</div>
+            </div>
+            <div>
+              <div style="font-size:10.5px;letter-spacing:.16em;color:#7C7A70">MONTO USD</div>
+              <div style="font-size:22px;font-weight:600;margin-top:4px;font-variant-numeric:tabular-nums">{{ e.monto }}</div>
+            </div>
+            <div>
+              <div style="font-size:10.5px;letter-spacing:.16em;color:#7C7A70">HASH</div>
+              <div style="font-size:15px;font-weight:600;margin-top:6px">{{ e.hash }}</div>
+            </div>
+            <div style="text-align:right;font-size:12px;letter-spacing:.14em;color:{{ e.color }}">{{ e.estado }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- PANEL FIDUCIARIO -->
+    <sc-if value="{{ isPanel }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:30px;padding:30px 34px 26px;border-bottom:1px solid #2A2A26;flex-wrap:wrap">
+        <div style="font-family:'Archivo Black',sans-serif;font-size:clamp(40px,5vw,60px);line-height:.92;letter-spacing:-.04em;text-transform:uppercase">Panel<br>fiduciario</div>
+        <div style="display:flex;gap:34px">
+          <div>
+            <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">PENDIENTES</div>
+            <div style="font-family:'Archivo Black',sans-serif;font-size:56px;line-height:1;margin-top:6px;color:#E8E000;font-variant-numeric:tabular-nums">{{ fd.pendientes }}</div>
+          </div>
+          <div>
+            <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">APROBADOS HOY</div>
+            <div style="font-family:'Archivo Black',sans-serif;font-size:56px;line-height:1;margin-top:6px;font-variant-numeric:tabular-nums">{{ fd.aprobados }}</div>
+          </div>
+        </div>
+      </div>
+      <div style="padding:22px 34px 0;font-size:11px;letter-spacing:.2em;color:#7C7A70">COLA DE CONTROL</div>
+      <div style="margin:14px 34px 0;border-top:1px solid #2A2A26">
+        <sc-for list="{{ fd.rows }}" as="r" hint-placeholder-count="4">
+          <div style="display:grid;grid-template-columns:44px minmax(0,1fr) 180px 190px 170px;align-items:center;gap:18px;padding:18px 4px;border-bottom:1px solid #2A2A26;background:{{ r.bg }}">
+            <div style="font-size:12px;font-weight:600;color:#7C7A70">{{ r.num }}</div>
+            <div style="min-width:0">
+              <div style="font-size:11px;letter-spacing:.18em;color:#7C7A70">{{ r.tipo }}</div>
+              <div style="font-size:23px;font-weight:600;letter-spacing:-.01em;margin-top:4px">{{ r.name }}</div>
+            </div>
+            <div style="font-size:13px;letter-spacing:.06em;color:#7C7A70">{{ r.cuit }}</div>
+            <div style="font-size:13px;letter-spacing:.14em;color:{{ r.estadoColor }}">{{ r.estado }}</div>
+            <div onClick="{{ r.act }}" style="{{ r.btn }}">{{ r.btnLabel }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    </sc-if>
+
+  </div>
+  </sc-if>
+
+  <div style="margin-top:auto;height:22px;background:repeating-linear-gradient(135deg,#E8E000 0 14px,#0B0B0A 14px 28px);flex:0 0 22px"></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:980}}">
+const TRUSTS = [
+  {kind:'CAMPO', tag:'LEY 26.737', name:'Campo La Esperanza', base:100.00, open:100.00, pct:12, renta:'5,8%', min:'USDC 250',
+   series:[93.1,94.0,94.6,95.2,96.0,96.4,97.1,97.9,98.4,99.0,99.6,100.0]},
+  {kind:'INMUEBLE', tag:'CESIÓN FIDUCIARIA · CNV', name:'Edificio Nueva Córdoba', base:104.20, open:100.00, pct:35, renta:'7,4%', min:'USDC 500',
+   series:[96.4,97.2,98.1,98.6,99.4,100.2,101.0,101.7,102.4,103.1,103.7,104.2]},
+  {kind:'CRÉDITOS', tag:'CESIÓN FIDUCIARIA', name:'Cartera Agro Río Cuarto', base:96.40, open:100.00, pct:61, renta:'9,1%', min:'USDC 100',
+   series:[101.2,100.7,100.1,99.6,99.0,98.6,98.1,97.7,97.2,96.9,96.6,96.4]},
+];
+const HOLD = [3600, 1200, 2400];
+const PAGOS = ['15 OCT 2026','01 OCT 2026','28 SEP 2026'];
+
+const BIENES = [
+  {id:'inmueble', title:'Inmueble', badge:'LEGAJO COMPLETO', desc:'Escritura, matrícula, informe de dominio, libre deuda y tasación.'},
+  {id:'campo', title:'Campo', badge:'LEGAJO COMPLETO', desc:'Título, hectáreas, RENSPA, aptitud y Ley 26.737 de tierras rurales.'},
+  {id:'creditos', title:'Cartera de créditos', badge:'CARGA POR PLANILLA', desc:'Se sube la planilla de deudores y se declaran mora, tasa y garantías.'},
+  {id:'maquinaria', title:'Maquinaria / rodados', badge:'CARGA POR PLANILLA', desc:'Se sube la planilla de unidades con título, registro y valuación.'},
+];
+
+const PROV = ['Córdoba','Buenos Aires','Santa Fe','Mendoza','Entre Ríos','Salta'];
+
+function n2(v){
+  const s = Math.abs(v).toFixed(2).split('.');
+  return (v < 0 ? '-' : '') + s[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ',' + s[1];
+}
+function n0(v){ return Math.round(Math.abs(v)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+function hash(){ return '0x' + Math.random().toString(16).slice(2,6) + '…' + Math.random().toString(16).slice(2,6); }
+
+class Component extends DCLogic {
+  state = {
+    role: null, view: 'mercado',
+    fStep: 0, bien: 'inmueble', fSent: false, fApproved: false, fHash: '',
+    iStep: 0, cat: 'calificado', walletOn: false, onboarded: false,
+    form: {f_denominacion:'Estancia El Tala', f_monto:'1.800.000', f_nominal:'100', f_plazo:'36', f_renta:'8,2', i_nombre:'', i_apellido:''},
+    sel: 1, qty: 25, done: false, tx: '', rentaNueva: 0,
+    prices: TRUSTS.map(t => t.base),
+    minted: [],
+    aprobados: TRUSTS.map(() => false),
+  };
+
+  componentDidMount(){
+    this.iv = setInterval(() => this.setState(s => ({
+      prices: s.prices.map((p, i) => {
+        const all = this.all(s);
+        const b = all[i] ? all[i].base : p;
+        return Math.min(b * 1.03, Math.max(b * 0.97, p + (Math.random() - 0.48) * 0.22));
+      })
+    })), 1900);
+  }
+  componentWillUnmount(){ clearInterval(this.iv); }
+
+  all(s){ return TRUSTS.concat((s || this.state).minted); }
+  v(id){ return this.state.form[id] || ''; }
+  set(id, val){ this.setState(s => ({form: Object.assign({}, s.form, {[id]: val})})); }
+  num(id){ return parseFloat(String(this.v(id)).replace(/\./g, '').replace(',', '.')) || 0; }
+
+  // --- constructores de campos ---
+  txt(id, label, ph, span){ return {kind:'text', id, label, ph: ph || '', span: span || 4}; }
+  sel(id, label, options, span){ return {kind:'select', id, label, options, span: span || 4}; }
+  file(id, label, span){ return {kind:'file', id, label, span: span || 4}; }
+  chk(id, text, span){ return {kind:'check', id, text, span: span || 12}; }
+
+  fieldDefs(){
+    const s = this.state;
+    if (s.role === 'fiduciante') {
+      if (s.fStep === 1) return [
+        this.sel('f_tipo_persona','TIPO DE PERSONA',['Persona jurídica','Persona humana']),
+        this.txt('f_razon','RAZÓN SOCIAL / NOMBRE','Agropecuaria El Tala S.A.', 5),
+        this.txt('f_cuit','CUIT / CUIL','30-71458209-4', 3),
+        this.txt('f_inscripcion','INSCRIPCIÓN REGISTRO PÚBLICO','Matrícula 12.874-A', 4),
+        this.txt('f_domicilio','DOMICILIO LEGAL','Av. Colón 1250, Córdoba', 5),
+        this.txt('f_email','EMAIL','legales@eltala.com.ar', 3),
+        this.txt('f_rep','REPRESENTANTE LEGAL','Martín Aguirre', 4),
+        this.txt('f_dnirep','DNI DEL REPRESENTANTE','28.114.902', 3),
+        this.txt('f_tel','TELÉFONO','+54 351 421 9080', 5),
+        this.file('f_doc_estatuto','ESTATUTO Y ACTA DE DESIGNACIÓN', 4),
+        this.file('f_doc_cuit','CONSTANCIA DE CUIT', 4),
+        this.file('f_doc_licitud','DDJJ DE LICITUD DE FONDOS', 4),
+        this.file('f_doc_pep','DDJJ DE PERSONA EXPUESTA POLÍTICAMENTE', 4),
+        this.file('f_doc_balance','ÚLTIMOS DOS BALANCES AUDITADOS', 4),
+        this.file('f_doc_poder','PODER DEL FIRMANTE', 4),
+        this.chk('f_veraz','Declaro que la información y la documentación aportadas son veraces y que el bien se encuentra libre de conflicto judicial.'),
+      ];
+      if (s.fStep === 2) {
+        if (s.bien === 'inmueble') return [
+          this.sel('f_prov','PROVINCIA', PROV, 3),
+          this.txt('f_loc','LOCALIDAD','Córdoba', 3),
+          this.txt('f_dir','DOMICILIO DEL INMUEBLE','Bv. Illia 320', 6),
+          this.txt('f_matricula','MATRÍCULA / FOLIO REAL','11-1.234.567', 4),
+          this.txt('f_catastral','NOMENCLATURA CATASTRAL','11-01-04-012-034', 4),
+          this.txt('f_escritura','ESCRITURA N° Y FECHA','412 · 08/03/2019', 4),
+          this.txt('f_escribano','ESCRIBANO INTERVINIENTE','Reg. 214 · S. Peralta', 4),
+          this.txt('f_sup_cub','SUPERFICIE CUBIERTA (M²)','2.840', 2),
+          this.txt('f_sup_tot','SUPERFICIE TOTAL (M²)','3.120', 2),
+          this.sel('f_destino','DESTINO',['Renta residencial','Renta comercial','Oficinas','Desarrollo'], 4),
+          this.sel('f_ocupacion','SITUACIÓN DE OCUPACIÓN',['Alquilado','Libre de ocupantes','Uso propio'], 4),
+          this.sel('f_gravamen','GRAVÁMENES',['Sin gravámenes','Hipoteca vigente','Embargo trabado'], 4),
+          this.txt('f_val_fiscal','VALUACIÓN FISCAL (ARS)','980.400.000', 4),
+          this.txt('f_tasacion','TASACIÓN (USD)','1.800.000', 4),
+          this.txt('f_tasador','TASADOR / MATRÍCULA','Estudio Vidal · CPI 4.120', 4),
+          this.file('f_doc_escritura','ESCRITURA ESCANEADA', 4),
+          this.file('f_doc_dominio','INFORME DE DOMINIO E INHIBICIÓN', 4),
+          this.file('f_doc_plano','PLANO DE MENSURA', 4),
+          this.file('f_doc_deuda','LIBRE DEUDA RENTAS Y MUNICIPAL', 4),
+          this.file('f_doc_tasacion','INFORME DE TASACIÓN', 4),
+          this.file('f_doc_seguro','PÓLIZA DE SEGURO VIGENTE', 4),
+          this.chk('f_cesion','Me comprometo a transmitir el dominio fiduciario del inmueble al fiduciario por escritura pública dentro de los 10 días de la aprobación.'),
+        ];
+        if (s.bien === 'campo') return [
+          this.sel('f_prov','PROVINCIA', PROV, 3),
+          this.txt('f_partido','PARTIDO / DEPARTAMENTO','Río Segundo', 3),
+          this.txt('f_matricula','MATRÍCULA / FOLIO REAL','27-0.987.654', 3),
+          this.txt('f_catastral','NOMENCLATURA CATASTRAL','27-05-000-112', 3),
+          this.txt('f_ha','SUPERFICIE TOTAL (HA)','420', 2),
+          this.txt('f_ha_agri','HA AGRÍCOLAS','310', 2),
+          this.txt('f_ha_gana','HA GANADERAS','95', 2),
+          this.sel('f_aptitud','APTITUD',['Mixta','Agrícola','Ganadera','Forestal'], 3),
+          this.txt('f_renspa','RENSPA','04.030.0.01234/01', 3),
+          this.sel('f_ley','CERTIFICADO LEY 26.737',['Certificado obtenido','En trámite','No alcanzado'], 4),
+          this.sel('f_explotacion','EXPLOTACIÓN',['Arrendado a tercero','Explotación propia','Aparcería'], 4),
+          this.sel('f_gravamen','GRAVÁMENES',['Sin gravámenes','Hipoteca vigente','Embargo trabado'], 4),
+          this.txt('f_val_ha','VALOR (USD/HA)','4.300', 3),
+          this.txt('f_tasacion','TASACIÓN TOTAL (USD)','1.806.000', 3),
+          this.txt('f_tasador','TASADOR / MATRÍCULA','Bustos & Asoc. · CIA 882', 3),
+          this.txt('f_agua','FUENTE DE AGUA','Perforación 60 m³/h', 3),
+          this.file('f_doc_titulo','TÍTULO DE PROPIEDAD', 4),
+          this.file('f_doc_dominio','INFORME DE DOMINIO E INHIBICIÓN', 4),
+          this.file('f_doc_renspa','CONSTANCIA RENSPA', 4),
+          this.file('f_doc_arrend','CONTRATO DE ARRENDAMIENTO', 4),
+          this.file('f_doc_tasacion','INFORME DE TASACIÓN', 4),
+          this.file('f_doc_deuda','LIBRE DEUDA INMOBILIARIO RURAL', 4),
+          this.chk('f_cesion','Me comprometo a transmitir el dominio fiduciario del campo al fiduciario por escritura pública dentro de los 10 días de la aprobación.'),
+        ];
+        if (s.bien === 'creditos') return [
+          this.file('f_doc_planilla','PLANILLA DE DEUDORES (XLSX / CSV)', 12),
+          this.txt('f_legajos','CANTIDAD DE LEGAJOS','1.284', 3),
+          this.txt('f_nominal_total','VALOR NOMINAL TOTAL (USD)','2.140.000', 3),
+          this.txt('f_tasa','TASA PROMEDIO (TNA %)','62,5', 3),
+          this.txt('f_plazo_prom','PLAZO PROMEDIO (MESES)','14', 3),
+          this.txt('f_mora','MORA MAYOR A 30 DÍAS (%)','2,1', 3),
+          this.sel('f_garantia','GARANTÍA PREDOMINANTE',['Prenda con registro','Cesión de facturas','Aval solidario','Sin garantía'], 4),
+          this.sel('f_sector','SECTOR',['Agroinsumos','Consumo','Pymes','Transporte'], 5),
+          this.file('f_doc_contratos','CONTRATOS TIPO Y CESIÓN', 4),
+          this.file('f_doc_auditoria','INFORME DE AUDITORÍA DE CARTERA', 4),
+          this.file('f_doc_mora','REPORTE HISTÓRICO DE MORA', 4),
+          this.chk('f_cesion','Declaro que los créditos existen, son de libre disponibilidad y no fueron cedidos previamente a terceros.'),
+        ];
+        return [
+          this.file('f_doc_planilla','PLANILLA DE UNIDADES (XLSX / CSV)', 12),
+          this.txt('f_unidades','CANTIDAD DE UNIDADES','18', 3),
+          this.txt('f_marcas','MARCAS Y MODELOS','John Deere 6145J · Case 7120', 6),
+          this.txt('f_anio','AÑO PROMEDIO','2021', 3),
+          this.sel('f_titulo','SITUACIÓN REGISTRAL',['Título propio libre','Prendado','Leasing en curso'], 4),
+          this.sel('f_uso','USO',['Contratista rural','Flota propia','Alquiler a terceros'], 4),
+          this.txt('f_valor','VALUACIÓN TOTAL (USD)','1.450.000', 4),
+          this.file('f_doc_titulos','TÍTULOS Y CÉDULAS DEL REGISTRO', 4),
+          this.file('f_doc_tasacion','TASACIÓN DE UNIDADES', 4),
+          this.file('f_doc_seguro','PÓLIZA DE SEGURO DE FLOTA', 4),
+          this.chk('f_cesion','Declaro que las unidades están libres de prenda no declarada y en condiciones de transferencia registral.'),
+        ];
+      }
+      if (s.fStep === 3) return [
+        this.txt('f_denominacion','DENOMINACIÓN DEL FIDEICOMISO','Fideicomiso Estancia El Tala', 6),
+        this.txt('f_monto','MONTO A TOKENIZAR (USD)','1.800.000', 3),
+        this.txt('f_nominal','VALOR NOMINAL POR CUOTAPARTE (USDC)','100', 3),
+        this.txt('f_plazo','PLAZO (MESES)','36', 3),
+        this.txt('f_renta','RENTA OBJETIVO ANUAL (%)','8,2', 3),
+        this.sel('f_periodicidad','PERIODICIDAD DE PAGO',['Trimestral','Mensual','Semestral'], 3),
+        this.sel('f_clase','CLASE DE CERTIFICADOS',['Única','Clase A senior','Clase B subordinada'], 3),
+        this.sel('f_lock','RESTRICCIÓN DE TRANSFERENCIA',['12 meses sin transferencia','Sin restricción'], 4),
+        this.sel('f_regimen','RÉGIMEN',['Oferta privada','Oferta pública CNV'], 4),
+        this.sel('f_moneda','MONEDA DE SUSCRIPCIÓN',['USDC','ARS'], 4),
+        this.chk('f_conformidad','Presto conformidad al contrato de fideicomiso, al suplemento de emisión y al honorario fiduciario del 1,2% anual sobre el patrimonio fideicomitido.'),
+      ];
+      return [];
+    }
+    // inversor
+    if (s.iStep === 0) return [
+      this.txt('i_nombre','NOMBRE','Julián', 3),
+      this.txt('i_apellido','APELLIDO','Ferreyra', 3),
+      this.txt('i_cuit','CUIT / CUIL','20-33145902-7', 3),
+      this.txt('i_nac','FECHA DE NACIMIENTO','14/06/1989', 3),
+      this.sel('i_nacionalidad','NACIONALIDAD',['Argentina','Uruguaya','Chilena','Otra'], 3),
+      this.txt('i_domicilio','DOMICILIO REAL','Belgrano 455, Córdoba', 5),
+      this.txt('i_email','EMAIL','julian.f@mail.com', 4),
+      this.txt('i_tel','TELÉFONO','+54 351 655 2211', 3),
+      this.sel('i_residencia','RESIDENCIA FISCAL',['Argentina','Exterior'], 3),
+      this.file('i_doc_frente','DNI · FRENTE', 4),
+      this.file('i_doc_dorso','DNI · DORSO', 4),
+      this.file('i_doc_selfie','SELFIE CON PRUEBA DE VIDA', 4),
+      this.chk('i_datos','Autorizo la validación de mis datos contra RENAPER y las bases de sujetos alcanzados por sanciones.'),
+    ];
+    if (s.iStep === 1) return s.cat === 'minorista' ? [
+      this.sel('i_test1','¿INVERTISTE ANTES EN INSTRUMENTOS NO LÍQUIDOS?',['Sí, más de tres veces','Una o dos veces','Nunca'], 6),
+      this.sel('i_test2','HORIZONTE DE INVERSIÓN',['Más de 3 años','1 a 3 años','Menos de 1 año'], 6),
+      this.sel('i_test3','¿QUÉ HARÍAS SI LA CUOTAPARTE CAE 20%?',['Mantengo','Compro más','Vendo todo'], 6),
+      this.sel('i_test4','PORCENTAJE DE TU PATRIMONIO A INVERTIR',['Menos del 10%','Entre 10% y 30%','Más del 30%'], 6),
+      this.chk('i_test_ack','Entiendo que los certificados no tienen cotización pública, que la transferencia está restringida y que puedo perder capital.'),
+    ] : [
+      this.sel('i_calif_motivo','ENCUADRE COMO INVERSOR CALIFICADO',['Patrimonio neto superior a 350.000 UVA','Ingresos anuales acreditados','Agente registrado CNV','Persona jurídica con activos superiores a 700.000 UVA'], 6),
+      this.file('i_doc_patrimonio','CERTIFICACIÓN CONTABLE DE PATRIMONIO', 4),
+      this.chk('i_calif_ack','Declaro encuadrar como inversor calificado en los términos de la normativa de la CNV y asumo el riesgo de la inversión.'),
+    ];
+    if (s.iStep === 2) return [
+      this.sel('i_origen','ORIGEN DE LOS FONDOS',['Actividad profesional','Empresa propia','Venta de inmueble','Herencia','Ahorro acumulado'], 4),
+      this.sel('i_monto_anual','MONTO ESTIMADO A INVERTIR POR AÑO',['USD 10.000 a 50.000','Hasta USD 10.000','USD 50.000 a 200.000','Más de USD 200.000'], 4),
+      this.txt('i_patrimonio','PATRIMONIO DECLARADO (USD)','450.000', 4),
+      this.sel('i_pep','CONDICIÓN PEP',['No soy persona expuesta políticamente','Soy PEP','Familiar o allegado de PEP'], 5),
+      this.sel('i_fatca','FATCA / CRS',['No soy sujeto obligado a reportar','Sujeto obligado a reportar'], 4),
+      this.file('i_doc_ingresos','RESPALDO DE INGRESOS (RECIBOS O BALANCE)', 4),
+      this.file('i_doc_impuestos','ÚLTIMA DDJJ DE GANANCIAS O BIENES PERSONALES', 4),
+      this.chk('i_licitud','Declaro bajo juramento que los fondos provienen de actividades lícitas y que la información es exacta, conforme la normativa de la UIF.'),
+    ];
+    if (s.iStep === 3) return [
+      this.sel('i_red','RED DE LIQUIDACIÓN',['Base','Polygon','Ethereum'], 4),
+      this.txt('i_cbu','CBU PARA RESCATES','0720123488000098765432', 5),
+    ];
+    return [ this.chk('i_firma','Firmo el contrato de adhesión y el suplemento de emisión, y acepto que la suscripción se registre en cadena a nombre de la dirección vinculada.') ];
+  }
+
+  buildFields(){
+    return this.fieldDefs().map(d => {
+      const wrap = {gridColumn: 'span ' + d.span, minWidth: 0, display:'flex', flexDirection:'column', justifyContent:'flex-end'};
+      if (d.kind === 'text') return {isField:true, isText:true, label:d.label, ph:d.ph, value:this.v(d.id), wrap,
+        onChange: (e) => this.set(d.id, e.target.value)};
+      if (d.kind === 'select') return {isField:true, isSelect:true, label:d.label, wrap,
+        value: this.v(d.id) || d.options[0], options: d.options.map(v => ({v})),
+        onChange: (e) => this.set(d.id, e.target.value)};
+      if (d.kind === 'file') {
+        const on = !!this.state.form[d.id];
+        return {isField:true, isFile:true, label:d.label, wrap,
+          fileLabel: on ? '✓ CARGADO · doc.pdf' : '+ ADJUNTAR ARCHIVO',
+          fileStyle: {marginTop:'7px', height:'42px', display:'flex', alignItems:'center', padding:'0 12px', cursor:'pointer',
+            fontSize:'11.5px', letterSpacing:'.12em',
+            border: on ? '1px solid #E8E000' : '1px dashed #3A3A34',
+            background: on ? '#1C1C10' : 'transparent',
+            color: on ? '#E8E000' : '#7C7A70'},
+          onChange: () => this.set(d.id, on ? '' : 'ok')};
+      }
+      const on = !!this.state.form[d.id];
+      return {isCheck:true, text:d.text, wrap, tick: on ? '✓' : '',
+        boxStyle: {width:'20px', height:'20px', flex:'0 0 20px', display:'grid', placeItems:'center', fontSize:'13px',
+          border: on ? '1px solid #E8E000' : '1px solid #3A3A34', background: on ? '#E8E000' : 'transparent', color:'#0B0B0A'},
+        onChange: () => this.set(d.id, on ? '' : 'ok')};
+    });
+  }
+
+  trust(i){
+    const t = this.all()[i], p = this.state.prices[i], d = p - t.open;
+    return {num:'0' + (i + 1), kind:t.kind, tag:t.tag, name:t.name, pct:t.pct, min:t.min, renta:t.renta,
+      price:n2(p), delta:(d >= 0 ? '▲ ' : '▼ ') + n2(Math.abs(d)), deltaStyle:{color: d >= 0 ? '#8FD14F' : '#FF4A1E'}};
+  }
+
+  mint(){
+    const monto = this.num('f_monto') || 1800000;
+    const nominal = this.num('f_nominal') || 100;
+    const bien = BIENES.filter(b => b.id === this.state.bien)[0];
+    const t = {kind: bien.title.toUpperCase(), tag:'EMISIÓN NUEVA · OFERTA PRIVADA',
+      name: this.v('f_denominacion') || 'Fideicomiso nuevo', base: nominal, open: nominal, pct: 0,
+      renta: (this.v('f_renta') || '8,2') + '%', min: 'USDC ' + n0(nominal),
+      series: [nominal,nominal,nominal,nominal,nominal,nominal,nominal,nominal,nominal,nominal,nominal,nominal]};
+    this.setState(s => ({minted: s.minted.concat([t]), prices: s.prices.concat([nominal]),
+      fApproved: true, fHash: s.fHash || hash()}));
+  }
+
+  tabStyle(active){
+    return {display:'flex', alignItems:'center', padding:'0 18px', borderRight:'1px solid #2A2A26', fontSize:'12px',
+      letterSpacing:'.16em', cursor:'pointer', fontWeight: active ? 600 : 400,
+      background: active ? '#15150F' : 'transparent', color: active ? '#E8E000' : '#7C7A70'};
+  }
+
+  renderVals(){
+    const s = this.state, isFid = s.role === 'fiduciante', isInv = s.role === 'inversor';
+    const all = this.all();
+    const i = Math.min(s.sel, all.length - 1);
+    const t = all[i];
+    const feat = this.trust(i);
+    const series = t.series.slice(0, 11).concat([s.prices[i]]);
+    const lo = Math.min.apply(null, series), hi = Math.max.apply(null, series);
+
+    const fSteps = ['TIPO DE BIEN','FIDUCIANTE','LEGAJO DEL BIEN','ESTRUCTURA','REVISIÓN'];
+    const iSteps = ['IDENTIDAD','CATEGORÍA','LICITUD DE FONDOS','WALLET','FIRMA'];
+    const steps = isFid ? fSteps : iSteps;
+    const cur = isFid ? s.fStep : s.iStep;
+    const wizardOn = isFid ? (!s.fSent && s.view === 'originar') : (!s.onboarded && s.view === 'onboarding');
+
+    const bien = BIENES.filter(b => b.id === s.bien)[0];
+    const monto = this.num('f_monto'), nominal = this.num('f_nominal') || 100;
+    const certs = Math.round(monto / nominal);
+
+    const stepMeta = isFid ? [
+      {kicker:'PASO 01 DE 05', title:'¿Qué bien traés?', hint:'EL LEGAJO CAMBIA SEGÚN EL BIEN. INMUEBLE Y CAMPO SE CARGAN CAMPO POR CAMPO; CARTERAS Y MAQUINARIA ENTRAN POR PLANILLA.', hasCards:true},
+      {kicker:'PASO 02 DE 05', title:'Quién es el fiduciante', hint:'DATOS DEL TITULAR QUE TRANSMITE EL BIEN AL PATRIMONIO FIDEICOMITIDO.', hasFields:true},
+      {kicker:'PASO 03 DE 05', title:'Legajo del bien', hint:'TODO LO QUE EL FIDUCIARIO NECESITA PARA CONTROLAR TÍTULO, GRAVÁMENES Y VALOR.', hasFields:true},
+      {kicker:'PASO 04 DE 05', title:'Estructura de la emisión', hint:'CUÁNTO SE TOKENIZA, EN CUÁNTAS CUOTAPARTES Y CON QUÉ REGLAS DE TRANSFERENCIA.', hasFields:true},
+      {kicker:'PASO 05 DE 05', title:'Revisión y envío', hint:'CONTROLÁ EL RESUMEN. AL ENVIAR, EL LEGAJO QUEDA EN REVISIÓN DEL FIDUCIARIO.', isReview:true},
+    ][cur] : [
+      {kicker:'PASO 01 DE 05', title:'Tu identidad', hint:'VERIFICACIÓN CONTRA RENAPER CON DNI Y PRUEBA DE VIDA.', hasFields:true},
+      {kicker:'PASO 02 DE 05', title:'Categoría de inversor', hint:'DEFINE CUÁNTO PODÉS SUSCRIBIR Y QUÉ DECLARACIONES TE PIDE LA NORMATIVA.', hasCards:true, hasFields:true},
+      {kicker:'PASO 03 DE 05', title:'Licitud de fondos', hint:'DECLARACIÓN DE ORIGEN DE FONDOS Y CONDICIÓN PEP, SEGÚN LA UIF.', hasFields:true},
+      {kicker:'PASO 04 DE 05', title:'Tu wallet', hint:'LAS CUOTAPARTES SE REGISTRAN CONTRA TU DIRECCIÓN. EL RESCATE VUELVE A TU CBU.', isWallet:true, hasFields:true},
+      {kicker:'PASO 05 DE 05', title:'Firma de adhesión', hint:'LEÉ Y FIRMÁ. QUEDA ASENTADO CON SELLO DE TIEMPO Y HASH.', isContract:true, hasFields:true},
+    ][cur];
+
+    const cards = isFid ? BIENES.map((b, k) => ({
+      num: '0' + (k + 1), badge: b.badge, title: b.title, desc: b.desc,
+      pick: () => this.setState({bien: b.id}),
+      style: {padding:'22px', cursor:'pointer', border: s.bien === b.id ? '1px solid #E8E000' : '1px solid #2A2A26',
+        background: s.bien === b.id ? '#E8E000' : '#15150F', color: s.bien === b.id ? '#0B0B0A' : '#EDEAE0'},
+    })) : [
+      {id:'calificado', num:'01', badge:'CNV', title:'Inversor calificado', desc:'Sin tope de suscripción. Requiere acreditar patrimonio, ingresos o registro.'},
+      {id:'minorista', num:'02', badge:'TEST DE CONVENIENCIA', title:'Minorista', desc:'Tope por emisión y test de conveniencia obligatorio antes de suscribir.'},
+    ].map(c => ({num:c.num, badge:c.badge, title:c.title, desc:c.desc,
+      pick: () => this.setState({cat: c.id}),
+      style: {padding:'22px', cursor:'pointer', border: s.cat === c.id ? '1px solid #E8E000' : '1px solid #2A2A26',
+        background: s.cat === c.id ? '#E8E000' : '#15150F', color: s.cat === c.id ? '#0B0B0A' : '#EDEAE0'}}));
+
+    const review = [
+      {k:'FIDUCIANTE', v: this.v('f_razon') || 'Agropecuaria El Tala S.A.'},
+      {k:'CUIT', v: this.v('f_cuit') || '30-71458209-4'},
+      {k:'BIEN FIDEICOMITIDO', v: bien.title},
+      {k:'IDENTIFICACIÓN', v: this.v('f_matricula') || this.v('f_legajos') || this.v('f_unidades') || '—'},
+      {k:'TASACIÓN / VALOR', v: 'USD ' + n0(this.num('f_tasacion') || this.num('f_nominal_total') || this.num('f_valor') || monto)},
+      {k:'DENOMINACIÓN', v: this.v('f_denominacion') || 'Fideicomiso Estancia El Tala'},
+      {k:'MONTO A TOKENIZAR', v: 'USD ' + n0(monto)},
+      {k:'CUOTAPARTES', v: n0(certs) + ' × USDC ' + n0(nominal)},
+      {k:'PLAZO Y RENTA', v: (this.v('f_plazo') || '36') + ' meses · ' + (this.v('f_renta') || '8,2') + '%'},
+      {k:'RÉGIMEN', v: (this.v('f_regimen') || 'Oferta privada') + ' · ' + (this.v('f_lock') || '12 meses sin transferencia')},
+    ];
+
+    const docsCargados = Object.keys(s.form).filter(k => k.indexOf(isFid ? 'f_doc' : 'i_doc') === 0 && s.form[k]).length;
+
+    const side = isFid ? {
+      kicker:'LA EMISIÓN, EN VIVO', big: n0(certs), bigSub:'CUOTAPARTES A EMITIR',
+      rows:[
+        {k:'BIEN', v: bien.title},
+        {k:'MONTO', v:'USD ' + n0(monto)},
+        {k:'VALOR NOMINAL', v:'USDC ' + n0(nominal)},
+        {k:'HONORARIO FIDUCIARIO', v:'USDC ' + n0(monto * 0.012) + ' / AÑO'},
+        {k:'RENTA OBJETIVO', v:(this.v('f_renta') || '8,2') + '%'},
+        {k:'DOCUMENTOS CARGADOS', v: docsCargados + ''},
+      ],
+      foot:'EL FIDUCIARIO CONTROLA TÍTULO, GRAVÁMENES Y TASACIÓN ANTES DE EMITIR. NADA SALE A MERCADO SIN ESE CONTROL.',
+    } : {
+      kicker:'TU HABILITACIÓN', big: (cur + 1) + '/5', bigSub:'PASOS COMPLETADOS',
+      rows:[
+        {k:'TITULAR', v: ((this.v('i_nombre') || 'Julián') + ' ' + (this.v('i_apellido') || 'Ferreyra'))},
+        {k:'CUIT', v: this.v('i_cuit') || '20-33145902-7'},
+        {k:'CATEGORÍA', v: s.cat === 'calificado' ? 'Calificado' : 'Minorista'},
+        {k:'TOPE POR EMISIÓN', v: s.cat === 'calificado' ? 'Sin tope' : 'USD 25.000'},
+        {k:'WALLET', v: s.walletOn ? '7xKX…9Pq2' : 'Sin vincular'},
+        {k:'DOCUMENTOS CARGADOS', v: docsCargados + ''},
+      ],
+      foot:'LA VERIFICACIÓN SE GUARDA CIFRADA. LA CUOTAPARTE SOLO PUEDE MOVERSE ENTRE CUENTAS APROBADAS.',
+    };
+
+    const fdRows = [].concat(
+      s.fSent && !s.fApproved ? [{
+        num:'00', tipo:'LEGAJO DE BIEN · ' + bien.title.toUpperCase(), name: this.v('f_denominacion') || 'Fideicomiso Estancia El Tala',
+        cuit: this.v('f_cuit') || '30-71458209-4', estado:'ESPERANDO CONTROL', estadoColor:'#E8E000', bg:'#15150F',
+        btnLabel:'APROBAR Y EMITIR', act: () => this.mint(),
+        btn:{height:'44px', display:'grid', placeItems:'center', fontSize:'12px', fontWeight:600, letterSpacing:'.16em',
+          cursor:'pointer', background:'#E8E000', color:'#0B0B0A'},
+      }] : [],
+      TRUSTS.map((x, k) => {
+        const ok = s.aprobados[k];
+        return {num:'0' + (k + 1), tipo:'ALTA DE FIDUCIANTE', name:x.name, cuit:'CUIT 30-714582' + (k + 10) + '-4', bg:'transparent',
+          estado: ok ? 'APROBADO' : 'DOCUMENTACIÓN COMPLETA', estadoColor: ok ? '#8FD14F' : '#7C7A70',
+          btnLabel: ok ? 'FIRMADO' : 'APROBAR',
+          act: () => this.setState(st => { const a = st.aprobados.slice(); a[k] = true; return {aprobados:a}; }),
+          btn:{height:'44px', display:'grid', placeItems:'center', fontSize:'12px', fontWeight:600, letterSpacing:'.16em',
+            cursor: ok ? 'default' : 'pointer', background: ok ? 'transparent' : '#E8E000',
+            color: ok ? '#8FD14F' : '#0B0B0A', border: ok ? '1px solid #2A2A26' : 'none'}};
+      })
+    );
+
+    const pnl = HOLD.reduce((a, q, k) => a + q * (s.prices[k] - TRUSTS[k].open), 0);
+
+    const tabDefs = isFid
+      ? [{id:'originar', label:'ORIGINAR'}, {id:'emisiones', label:'MIS EMISIONES'}, {id:'panel', label:'PANEL FIDUCIARIO'}]
+      : [{id:'mercado', label:'MERCADO'}, {id:'portafolio', label:'PORTAFOLIO'}, {id:'onboarding', label:'MI VERIFICACIÓN'}];
+
+    return {
+      isEntry: !s.role, isApp: !!s.role,
+      roleLabel: isFid ? 'FIDUCIANTE' : 'INVERSOR',
+      walletLabel: isInv ? (s.walletOn ? '7xKX…9Pq2' : 'SIN WALLET') : '7xKX…9Pq2',
+      kycLabel: isInv ? (s.onboarded ? 'KYC OK' : 'KYC PENDIENTE') : 'LEGAJO ACTIVO',
+      enterFiduciante: () => this.setState({role:'fiduciante', view:'originar'}),
+      enterInversor: () => this.setState({role:'inversor', view: s.onboarded ? 'mercado' : 'onboarding', iStep: s.onboarded ? s.iStep : 0}),
+      isVerif: isInv && s.view === 'onboarding' && s.onboarded,
+      redoKyc: () => this.setState({onboarded:false, iStep:0}),
+      verif: [
+        {k:'ESTADO KYC', v:'APROBADO', c:'#8FD14F'},
+        {k:'CATEGORÍA', v: s.cat === 'calificado' ? 'CALIFICADO · SIN TOPE' : 'MINORISTA · USD 25.000', c:'#EDEAE0'},
+        {k:'LICITUD DE FONDOS', v:'DECLARADA', c:'#8FD14F'},
+        {k:'CONDICIÓN PEP', v: (this.v('i_pep') || 'No soy persona expuesta políticamente').toUpperCase(), c:'#EDEAE0'},
+        {k:'WALLET VINCULADA', v: s.walletOn ? '7xKX…9Pq2' : 'SIN VINCULAR', c: s.walletOn ? '#EDEAE0' : '#FF4A1E'},
+        {k:'CONTRATO DE ADHESIÓN', v:'FIRMADO', c:'#8FD14F'},
+      ],
+      exit: () => this.setState({role:null}),
+      tabs: tabDefs.map(d => ({label:d.label, style:this.tabStyle(s.view === d.id), go: () => this.setState({view:d.id})})),
+
+      isWizard: wizardOn,
+      isEstado: isFid && s.view === 'originar' && s.fSent,
+      isEmisiones: isFid && s.view === 'emisiones',
+      isPanel: isFid && s.view === 'panel',
+      isMercado: isInv && s.view === 'mercado',
+      isPortafolio: isInv && s.view === 'portafolio',
+      needsKyc: isInv && !s.onboarded,
+      goKyc: () => this.setState({view:'onboarding'}),
+
+      rail: steps.map((label, k) => ({
+        num: '0' + (k + 1), label,
+        go: () => (k <= cur ? this.setState(isFid ? {fStep:k} : {iStep:k}) : null),
+        style: {padding:'14px 20px', fontSize:'11px', letterSpacing:'.16em', cursor: k <= cur ? 'pointer' : 'default',
+          borderRight:'1px solid #2A2A26', color: k === cur ? '#E8E000' : (k < cur ? '#EDEAE0' : '#55534C'),
+          background: k === cur ? '#15150F' : 'transparent'},
+      })),
+      step: stepMeta, cards, fields: this.buildFields(), review, side,
+      canBack: cur > 0,
+      back: () => this.setState(isFid ? {fStep: Math.max(0, s.fStep - 1)} : {iStep: Math.max(0, s.iStep - 1)}),
+      nextLabel: cur === 4 ? (isFid ? 'ENVIAR AL FIDUCIARIO' : 'FIRMAR Y TERMINAR') : 'SIGUIENTE PASO',
+      next: () => {
+        if (cur < 4) return this.setState(isFid ? {fStep: s.fStep + 1} : {iStep: s.iStep + 1});
+        if (isFid) return this.setState({fSent:true, fHash:hash()});
+        return this.setState({onboarded:true, view:'mercado', sel: Math.min(1, all.length - 1)});
+      },
+      connectWallet: () => this.setState({walletOn: true}),
+      walletOn: s.walletOn,
+      walletBtnLabel: s.walletOn ? '✓ WALLET VINCULADA' : 'CONECTAR WALLET',
+      walletBtn: {height:'54px', padding:'0 30px', display:'grid', placeItems:'center', fontSize:'12.5px', fontWeight:600,
+        letterSpacing:'.18em', cursor:'pointer', background: s.walletOn ? 'transparent' : '#E8E000',
+        color: s.walletOn ? '#E8E000' : '#0B0B0A', border: s.walletOn ? '1px solid #E8E000' : 'none'},
+
+      enRevision: s.fSent && !s.fApproved, emitido: s.fSent && s.fApproved,
+      emision: {nombre: this.v('f_denominacion') || 'Fideicomiso Estancia El Tala', certs: n0(certs),
+        nominal: 'USDC ' + n0(nominal), hash: s.fHash || '—'},
+      goPanel: () => this.setState({view:'panel'}),
+      goMercadoMinted: () => this.setState({role:'inversor', onboarded:true, walletOn:true, view:'mercado', sel: all.length - 1, done:false, qty:25}),
+      newLegajo: () => this.setState({view:'originar', fSent:false, fApproved:false, fStep:0}),
+      emisiones: [].concat(
+        s.fSent ? [{num:'01', kind: bien.title.toUpperCase(), name: this.v('f_denominacion') || 'Fideicomiso Estancia El Tala',
+          monto: n0(monto), hash: s.fApproved ? s.fHash : '—',
+          estado: s.fApproved ? 'EN MERCADO' : 'EN REVISIÓN', color: s.fApproved ? '#8FD14F' : '#E8E000'}] : [],
+        [{num: s.fSent ? '02' : '01', kind:'INMUEBLE', name:'Edificio Nueva Córdoba', monto:'2.480.000', hash:'0x91af…3d02', estado:'EN MERCADO', color:'#8FD14F'},
+         {num: s.fSent ? '03' : '02', kind:'CAMPO', name:'Campo La Esperanza', monto:'1.240.000', hash:'0x44be…7c19', estado:'EN MERCADO', color:'#8FD14F'}]
+      ),
+
+      tape: all.map((x, k) => {
+        const tr = this.trust(k);
+        return {text: x.name.toUpperCase() + '  ' + tr.price + '  ' + tr.delta};
+      }).concat([{text:'USDC/ARS 1.412'}, {text:'RENTA REPARTIDA USDC 175.500'}]),
+
+      feat: Object.assign(feat, {low:n2(lo), high:n2(hi), barStyle:{height:'100%', width:t.pct + '%', background:'#E8E000'}}),
+      bars: series.map((v, k) => ({style:{width:'100%',
+        height: Math.round(14 + ((v - lo) / ((hi - lo) || 1)) * 88) + 'px', background: k === 11 ? '#E8E000' : '#3A3A34'}})),
+      others: all.map((x, k) => k).filter(k => k !== i).map(k => Object.assign(this.trust(k), {
+        select: () => this.setState({sel:k, done:false, qty:25}),
+        card: {padding:'22px 28px', flex:1, borderBottom:'1px solid #2A2A26', cursor:'pointer', minWidth:0},
+        barStyle: {height:'100%', width: all[k].pct + '%', background:'#EDEAE0'},
+      })),
+      mk: {tokenizado: 'USD ' + n0(2480000 + s.minted.reduce((a, m) => a + m.base * 0, 0) + (s.fApproved ? monto : 0)),
+        inversores: n0(1240 + (s.onboarded ? 1 : 0))},
+
+      qty: s.qty, buying: !s.done && s.onboarded, done: s.done && s.onboarded, tx: s.tx,
+      total: n2(s.qty * s.prices[i]),
+      inc: () => this.setState(st => ({qty: st.qty + 5})),
+      dec: () => this.setState(st => ({qty: Math.max(1, st.qty - 5)})),
+      onQty: (e) => {
+        const v = parseInt(String(e.target.value).replace(/\D/g, ''), 10);
+        this.setState({qty: isNaN(v) ? 0 : Math.min(99999, v)});
+      },
+      confirm: () => this.setState(st => ({done:true, tx:hash(), rentaNueva: Math.round(st.qty * st.prices[i] * 0.0185)})),
+      goPortafolio: () => this.setState({view:'portafolio'}),
+
+      pf: s.onboarded ? {
+        hasRenta: s.rentaNueva > 0, rentaNueva: n0(s.rentaNueva),
+        rentaNota: 'DISTRIBUCIÓN ' + (t.renta || '7,4%') + ' ANUAL · ' + (this.v('i_nombre') || 'Julián').toUpperCase() + ' · HACE 2 MINUTOS',
+        total: n0(HOLD.reduce((a, q, k) => a + q * s.prices[k], 0) + s.qty * (s.done ? s.prices[i] : 0)),
+        renta: n0(8900 + s.rentaNueva),
+        pnl: (pnl >= 0 ? '+ ' : '− ') + n0(pnl), pnlColor: pnl >= 0 ? '#8FD14F' : '#FF4A1E',
+        rows: [].concat(
+          s.done ? [{num:'00', kind:t.kind + ' · NUEVA', name:t.name, qty:n0(s.qty), value:n0(s.qty * s.prices[i]), pago:'EN CURSO'}] : [],
+          TRUSTS.map((x, k) => ({num:'0' + (k + 1), kind:x.kind, name:x.name, qty:n0(HOLD[k]),
+            value:n0(HOLD[k] * s.prices[k]), pago:PAGOS[k]}))
+        ),
+      } : {
+        hasRenta: false, rentaNueva: '0', rentaNota: '',
+        total: '0', renta: '0', pnl: '0', pnlColor: '#55534C',
+        rows: [{num:'—', kind:'SIN POSICIONES', name:'Todavía no suscribiste', qty:'0', value:'0', pago:'—'}],
+      },
+
+      fd: {rows: fdRows, pendientes: '0' + fdRows.filter(r => r.btnLabel === 'APROBAR' || r.btnLabel === 'APROBAR Y EMITIR').length,
+        aprobados: '1' + (2 + s.aprobados.filter(Boolean).length)},
+    };
+  }
+}
+</script>
+</body>
+</html>

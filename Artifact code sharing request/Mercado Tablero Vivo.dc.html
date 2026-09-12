@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#0B0B0A;color:#EDEAE0;font-family:'IBM Plex Mono',ui-monospace,monospace;-webkit-font-smoothing:antialiased}
+    a{color:#E8E000;text-decoration:none}
+    a:hover{color:#EDEAE0}
+    @keyframes tape{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    @keyframes blip{0%,55%{opacity:1}56%,100%{opacity:.15}}
+    input[type=range]{accent-color:#E8E000}
+    input,button{font-family:inherit}
+  </style>
+</helmet>
+
+<div style="min-height:940px;background:#0B0B0A;display:flex;flex-direction:column;overflow:hidden">
+
+  <div style="background:#E8E000;color:#0B0B0A;height:38px;display:flex;align-items:center;overflow:hidden;flex:0 0 38px">
+    <div style="display:flex;white-space:nowrap;animation:tape 34s linear infinite;font-size:13px;font-weight:600;letter-spacing:.1em">
+      <sc-for list="{{ tape }}" as="t" hint-placeholder-count="5"><span style="padding-right:40px">{{ t.text }}</span></sc-for>
+      <sc-for list="{{ tape }}" as="t" hint-placeholder-count="5"><span style="padding-right:40px">{{ t.text }}</span></sc-for>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:stretch;border-bottom:1px solid #2A2A26;min-height:52px">
+    <div style="display:flex;align-items:center;gap:10px;padding:0 20px;border-right:1px solid #2A2A26">
+      <span style="width:12px;height:12px;background:#E8E000;display:block"></span>
+      <span style="font-family:'Archivo Black',sans-serif;font-size:17px;letter-spacing:-.01em">FIDETOK</span>
+    </div>
+    <div style="display:flex;align-items:stretch">
+      <div onClick="{{ goMercado }}" style="{{ tab.mercado }}">MERCADO</div>
+      <div onClick="{{ goPortafolio }}" style="{{ tab.portafolio }}">PORTAFOLIO</div>
+      <div onClick="{{ goTokenizar }}" style="{{ tab.tokenizar }}">TOKENIZAR</div>
+      <div onClick="{{ goPanel }}" style="{{ tab.panel }}">PANEL</div>
+    </div>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:14px;padding:0 20px;border-left:1px solid #2A2A26;font-size:12px;letter-spacing:.08em;color:#7C7A70">
+      <span style="display:flex;align-items:center;gap:7px;color:#EDEAE0"><span style="width:8px;height:8px;background:#E8E000;display:block;animation:blip 1.4s steps(1) infinite"></span>EN VIVO</span>
+      <span>7xKX…9Pq2</span>
+      <span>KYC OK</span>
+    </div>
+  </div>
+
+  <!-- MERCADO -->
+  <sc-if value="{{ isMercado }}" hint-placeholder-val="{{ true }}">
+  <div style="display:flex;flex-direction:column;flex:1">
+    <div style="display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);border-bottom:1px solid #2A2A26">
+
+      <div style="padding:30px 34px 28px;border-right:1px solid #2A2A26">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <span style="background:#E8E000;color:#0B0B0A;font-size:11.5px;font-weight:600;letter-spacing:.18em;padding:5px 10px">DESTACADO {{ feat.num }}</span>
+          <span style="font-size:11.5px;letter-spacing:.18em;color:#7C7A70">{{ feat.kind }} · {{ feat.tag }}</span>
+        </div>
+        <div style="font-family:'Archivo Black',sans-serif;font-size:76px;line-height:.94;letter-spacing:-.04em;margin-top:22px;text-transform:uppercase">{{ feat.name }}</div>
+        <div style="display:flex;align-items:flex-end;gap:30px;margin-top:26px;flex-wrap:wrap">
+          <div>
+            <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">USDC · CUOTAPARTE</div>
+            <div style="font-family:'Archivo Black',sans-serif;font-size:118px;line-height:.82;letter-spacing:-.05em;color:#E8E000;font-variant-numeric:tabular-nums;margin-top:8px">{{ feat.price }}</div>
+          </div>
+          <div style="padding-bottom:10px">
+            <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">VARIACIÓN HOY</div>
+            <div style="font-family:'Archivo Black',sans-serif;font-size:40px;line-height:1;letter-spacing:-.03em;margin-top:8px" style-hover="" >
+              <span style="{{ feat.deltaStyle }}">{{ feat.delta }}</span>
+            </div>
+          </div>
+          <div style="padding-bottom:10px">
+            <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">RENTA ANUAL</div>
+            <div style="font-family:'Archivo Black',sans-serif;font-size:40px;line-height:1;letter-spacing:-.03em;margin-top:8px">{{ feat.renta }}</div>
+          </div>
+        </div>
+
+        <div style="margin-top:26px;display:flex;align-items:flex-end;gap:5px;height:104px;border-bottom:1px solid #2A2A26;padding-bottom:0">
+          <sc-for list="{{ bars }}" as="b" hint-placeholder-count="12">
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%">
+              <div style="{{ b.style }}"></div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:10.5px;letter-spacing:.14em;color:#7C7A70">
+          <span>VALOR CUOTAPARTE · 12 MESES</span>
+          <span>MÍN {{ feat.low }} / MÁX {{ feat.high }}</span>
+        </div>
+
+        <div style="margin-top:22px">
+          <div style="height:16px;border:1px solid #EDEAE0;background:repeating-linear-gradient(135deg,#1A1A16 0 6px,#0B0B0A 6px 12px)">
+            <div style="{{ feat.barStyle }}"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:16px;margin-top:10px;font-size:12px;letter-spacing:.14em">
+            <span>{{ feat.pct }}% SUSCRIPTO</span>
+            <span style="color:#7C7A70">MÍNIMO {{ feat.min }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column">
+        <sc-for list="{{ others }}" as="o" hint-placeholder-count="2">
+          <div onClick="{{ o.select }}" style="{{ o.card }}">
+            <div style="display:flex;justify-content:space-between;gap:14px;font-size:11.5px;letter-spacing:.18em;color:#7C7A70"><span>{{ o.num }} · {{ o.kind }}</span><span style="{{ o.deltaStyle }}">{{ o.delta }}</span></div>
+            <div style="font-family:'Archivo Black',sans-serif;font-size:28px;line-height:1.05;letter-spacing:-.02em;margin-top:12px;text-transform:uppercase">{{ o.name }}</div>
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-top:18px">
+              <div style="font-family:'Archivo Black',sans-serif;font-size:66px;line-height:.85;letter-spacing:-.04em;font-variant-numeric:tabular-nums">{{ o.price }}</div>
+              <div style="text-align:right;font-size:12px;letter-spacing:.12em;color:#7C7A70;padding-bottom:6px">{{ o.pct }}%<br>SUSCRIPTO</div>
+            </div>
+            <div style="height:10px;border:1px solid #3A3A34;margin-top:16px"><div style="{{ o.barStyle }}"></div></div>
+            <div style="margin-top:14px;font-size:11px;letter-spacing:.16em;color:#E8E000">VER →</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- COMPRA -->
+    <div style="border-bottom:1px solid #2A2A26;background:#15150F">
+      <sc-if value="{{ buying }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:26px 30px;padding:22px 34px">
+          <div style="flex:1 1 320px;min-width:300px">
+            <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">SUSCRIBIR · {{ feat.name }} · CUOTAPARTES</div>
+            <div style="display:flex;align-items:center;gap:14px;margin-top:12px">
+              <div onClick="{{ dec }}" style="width:42px;height:42px;border:1px solid #3A3A34;display:grid;place-items:center;font-size:20px;cursor:pointer;user-select:none" style-hover="border-color:#E8E000;color:#E8E000">−</div>
+              <input value="{{ qty }}" onChange="{{ onQty }}" style="width:132px;height:42px;background:#0B0B0A;border:1px solid #3A3A34;color:#EDEAE0;font-size:22px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums;outline:none">
+              <div onClick="{{ inc }}" style="width:42px;height:42px;border:1px solid #3A3A34;display:grid;place-items:center;font-size:20px;cursor:pointer;user-select:none" style-hover="border-color:#E8E000;color:#E8E000">+</div>
+            </div>
+          </div>
+          <div style="flex:0 0 auto">
+            <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">PRECIO UNITARIO</div>
+            <div style="font-family:'Archivo Black',sans-serif;font-size:34px;line-height:1;margin-top:8px;font-variant-numeric:tabular-nums">{{ feat.price }}</div>
+          </div>
+          <div style="flex:0 0 auto">
+            <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">TOTAL USDC</div>
+            <div style="font-family:'Archivo Black',sans-serif;font-size:34px;line-height:1;margin-top:8px;color:#E8E000;font-variant-numeric:tabular-nums">{{ total }}</div>
+          </div>
+          <div onClick="{{ confirm }}" style="flex:1 1 240px;min-width:220px;background:#E8E000;color:#0B0B0A;height:56px;display:grid;place-items:center;font-size:13px;font-weight:600;letter-spacing:.18em;cursor:pointer" style-hover="background:#EDEAE0">CONFIRMAR SUSCRIPCIÓN</div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ done }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:22px 26px;padding:22px 34px;background:#E8E000;color:#0B0B0A">
+          <div style="flex:1 1 340px;min-width:300px">
+            <div style="font-size:11px;font-weight:600;letter-spacing:.2em">ORDEN REGISTRADA EN CADENA</div>
+            <div style="font-family:'Archivo Black',sans-serif;font-size:34px;line-height:1.05;margin-top:8px;font-variant-numeric:tabular-nums">{{ qty }} × {{ feat.name }} · USDC {{ total }}</div>
+            <div style="font-size:11.5px;letter-spacing:.12em;margin-top:8px">TX {{ tx }} · LIQUIDA T+0 · CUSTODIA FIDUCIARIA</div>
+          </div>
+          <div onClick="{{ reset }}" style="flex:1 1 240px;min-width:220px;border:1px solid #0B0B0A;height:56px;display:grid;place-items:center;font-size:13px;font-weight:600;letter-spacing:.18em;cursor:pointer" style-hover="background:#0B0B0A;color:#E8E000">OTRA OPERACIÓN</div>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid #2A2A26">
+      <div style="padding:22px 34px">
+        <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">TOKENIZADO</div>
+        <div style="font-family:'Archivo Black',sans-serif;font-size:50px;line-height:1;letter-spacing:-.035em;margin-top:8px;font-variant-numeric:tabular-nums">USD 2,48M</div>
+      </div>
+      <div style="padding:22px 34px;border-left:1px solid #2A2A26">
+        <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">INVERSORES HABILITADOS</div>
+        <div style="font-family:'Archivo Black',sans-serif;font-size:50px;line-height:1;letter-spacing:-.035em;margin-top:8px;font-variant-numeric:tabular-nums">1.240</div>
+      </div>
+      <div style="padding:22px 34px;border-left:1px solid #2A2A26">
+        <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">RENTA REPARTIDA</div>
+        <div style="font-family:'Archivo Black',sans-serif;font-size:50px;line-height:1;letter-spacing:-.035em;margin-top:8px;font-variant-numeric:tabular-nums;color:#E8E000">USDC 175.500</div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- PORTAFOLIO -->
+  <sc-if value="{{ isPortafolio }}" hint-placeholder-val="{{ false }}">
+  <div style="flex:1;display:flex;flex-direction:column">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));border-bottom:1px solid #2A2A26">
+      <div style="padding:30px 34px;min-width:0">
+        <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">VALOR DE CARTERA · USDC</div>
+        <div style="font-family:'Archivo Black',sans-serif;font-size:clamp(44px,5.2vw,76px);line-height:.9;letter-spacing:-.045em;margin-top:10px;color:#E8E000;font-variant-numeric:tabular-nums">{{ pf.total }}</div>
+      </div>
+      <div style="padding:30px 34px;border-left:1px solid #2A2A26;min-width:0">
+        <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">RENTA COBRADA</div>
+        <div style="font-family:'Archivo Black',sans-serif;font-size:clamp(44px,5.2vw,76px);line-height:.9;letter-spacing:-.045em;margin-top:10px;font-variant-numeric:tabular-nums">{{ pf.renta }}</div>
+      </div>
+      <div style="padding:30px 34px;border-left:1px solid #2A2A26;min-width:0">
+        <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">RESULTADO NO REALIZADO</div>
+        <div style="font-family:'Archivo Black',sans-serif;font-size:clamp(44px,5.2vw,76px);line-height:.9;letter-spacing:-.045em;margin-top:10px;font-variant-numeric:tabular-nums;color:{{ pf.pnlColor }}">{{ pf.pnl }}</div>
+      </div>
+    </div>
+    <div style="padding:26px 34px 0;font-size:11px;letter-spacing:.2em;color:#7C7A70">POSICIONES</div>
+    <div style="margin:16px 34px 0;border-top:1px solid #2A2A26">
+      <sc-for list="{{ pf.rows }}" as="r" hint-placeholder-count="3">
+        <div style="display:grid;grid-template-columns:44px minmax(0,1fr) 160px 190px 150px;align-items:center;gap:20px;padding:20px 4px;border-bottom:1px solid #2A2A26">
+          <div style="font-size:12px;font-weight:600;letter-spacing:.08em;color:#7C7A70">{{ r.num }}</div>
+          <div>
+            <div style="font-size:11px;letter-spacing:.18em;color:#7C7A70">{{ r.kind }}</div>
+            <div style="font-family:'Archivo Black',sans-serif;font-size:26px;letter-spacing:-.02em;margin-top:4px;text-transform:uppercase">{{ r.name }}</div>
+          </div>
+          <div>
+            <div style="font-size:10.5px;letter-spacing:.16em;color:#7C7A70">CUOTAPARTES</div>
+            <div style="font-size:26px;font-weight:600;margin-top:4px;font-variant-numeric:tabular-nums">{{ r.qty }}</div>
+          </div>
+          <div>
+            <div style="font-size:10.5px;letter-spacing:.16em;color:#7C7A70">VALOR USDC</div>
+            <div style="font-family:'Archivo Black',sans-serif;font-size:30px;margin-top:4px;font-variant-numeric:tabular-nums">{{ r.value }}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:10.5px;letter-spacing:.16em;color:#7C7A70">PRÓXIMO PAGO</div>
+            <div style="font-size:15px;font-weight:600;margin-top:6px;letter-spacing:.06em">{{ r.pago }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- TOKENIZAR -->
+  <sc-if value="{{ isTokenizar }}" hint-placeholder-val="{{ false }}">
+  <div style="flex:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.85fr)">
+    <div style="padding:30px 34px;border-right:1px solid #2A2A26">
+      <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">ORIGINAR · PASO 1 DE 3</div>
+      <div style="font-family:'Archivo Black',sans-serif;font-size:60px;line-height:.92;letter-spacing:-.04em;margin-top:16px;text-transform:uppercase">Nuevo<br>fideicomiso</div>
+      <div style="margin-top:32px;font-size:11px;letter-spacing:.18em;color:#7C7A70">ACTIVO SUBYACENTE</div>
+      <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+        <sc-for list="{{ tk.kinds }}" as="k" hint-placeholder-count="3">
+          <div onClick="{{ k.pick }}" style="{{ k.style }}">{{ k.label }}</div>
+        </sc-for>
+      </div>
+      <div style="margin-top:34px;display:flex;align-items:baseline;justify-content:space-between;gap:16px">
+        <div style="font-size:11px;letter-spacing:.18em;color:#7C7A70">VALUACIÓN DEL ACTIVO · USD</div>
+        <div style="font-family:'Archivo Black',sans-serif;font-size:52px;line-height:1;color:#E8E000;font-variant-numeric:tabular-nums">{{ tk.monto }}</div>
+      </div>
+      <input type="range" min="100000" max="5000000" step="50000" value="{{ tk.raw }}" onChange="{{ tk.onMonto }}" style="width:100%;margin-top:16px;height:26px">
+      <div style="display:flex;justify-content:space-between;font-size:10.5px;letter-spacing:.14em;color:#7C7A70">
+        <span>USD 100.000</span><span>USD 5.000.000</span>
+      </div>
+    </div>
+    <div style="padding:30px 34px;background:#15150F;display:flex;flex-direction:column">
+      <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">EMISIÓN RESULTANTE</div>
+      <div style="margin-top:24px">
+        <div style="font-size:11px;letter-spacing:.18em;color:#7C7A70">CERTIFICADOS A EMITIR</div>
+        <div style="font-family:'Archivo Black',sans-serif;font-size:92px;line-height:.9;letter-spacing:-.045em;margin-top:8px;font-variant-numeric:tabular-nums">{{ tk.certs }}</div>
+      </div>
+      <div style="margin-top:28px;border-top:1px solid #2A2A26;padding-top:20px;display:grid;gap:16px">
+        <div style="display:flex;justify-content:space-between;gap:16px"><span style="font-size:11.5px;letter-spacing:.14em;color:#7C7A70">VALOR NOMINAL</span><span style="font-size:17px;font-weight:600;font-variant-numeric:tabular-nums">USDC 100,00</span></div>
+        <div style="display:flex;justify-content:space-between;gap:16px"><span style="font-size:11.5px;letter-spacing:.14em;color:#7C7A70">ESTRUCTURA</span><span style="font-size:17px;font-weight:600">{{ tk.kind }}</span></div>
+        <div style="display:flex;justify-content:space-between;gap:16px"><span style="font-size:11.5px;letter-spacing:.14em;color:#7C7A70">HONORARIO FIDUCIARIO</span><span style="font-size:17px;font-weight:600;font-variant-numeric:tabular-nums">{{ tk.fee }}</span></div>
+        <div style="display:flex;justify-content:space-between;gap:16px"><span style="font-size:11.5px;letter-spacing:.14em;color:#7C7A70">RÉGIMEN</span><span style="font-size:17px;font-weight:600">OFERTA PRIVADA · CNV</span></div>
+      </div>
+      <div style="margin-top:auto;background:#E8E000;color:#0B0B0A;height:56px;display:grid;place-items:center;font-size:13px;font-weight:600;letter-spacing:.18em;cursor:pointer" style-hover="background:#EDEAE0">CONTINUAR A GARANTÍAS</div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- PANEL FIDUCIARIO -->
+  <sc-if value="{{ isPanel }}" hint-placeholder-val="{{ false }}">
+  <div style="flex:1;display:flex;flex-direction:column">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:30px;padding:30px 34px 26px;border-bottom:1px solid #2A2A26;flex-wrap:wrap">
+      <div style="font-family:'Archivo Black',sans-serif;font-size:60px;line-height:.92;letter-spacing:-.04em;text-transform:uppercase">Panel<br>fiduciario</div>
+      <div style="display:flex;gap:34px">
+        <div>
+          <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">PENDIENTES</div>
+          <div style="font-family:'Archivo Black',sans-serif;font-size:56px;line-height:1;margin-top:6px;color:#E8E000;font-variant-numeric:tabular-nums">{{ fd.pendientes }}</div>
+        </div>
+        <div>
+          <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">APROBADOS HOY</div>
+          <div style="font-family:'Archivo Black',sans-serif;font-size:56px;line-height:1;margin-top:6px;font-variant-numeric:tabular-nums">{{ fd.aprobados }}</div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:22px 34px 0;font-size:11px;letter-spacing:.2em;color:#7C7A70">COLA DE VERIFICACIÓN</div>
+    <div style="margin:14px 34px 0;border-top:1px solid #2A2A26">
+      <sc-for list="{{ fd.rows }}" as="r" hint-placeholder-count="4">
+        <div style="display:grid;grid-template-columns:44px minmax(0,1fr) 180px 170px 170px;align-items:center;gap:20px;padding:18px 4px;border-bottom:1px solid #2A2A26">
+          <div style="font-size:12px;font-weight:600;color:#7C7A70">{{ r.num }}</div>
+          <div>
+            <div style="font-size:11px;letter-spacing:.18em;color:#7C7A70">{{ r.tipo }}</div>
+            <div style="font-size:24px;font-weight:600;letter-spacing:-.01em;margin-top:4px">{{ r.name }}</div>
+          </div>
+          <div style="font-size:13px;letter-spacing:.06em;color:#7C7A70">{{ r.cuit }}</div>
+          <div style="font-size:13px;letter-spacing:.14em;color:{{ r.estadoColor }}">{{ r.estado }}</div>
+          <div onClick="{{ r.act }}" style="{{ r.btn }}">{{ r.btnLabel }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <div style="margin-top:auto;height:22px;background:repeating-linear-gradient(135deg,#E8E000 0 14px,#0B0B0A 14px 28px);flex:0 0 22px"></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:980}}">
+const TRUSTS = [
+  {kind:'CAMPO', tag:'LEY 26.737', name:'Campo La Esperanza', base:100.00, open:100.00, pct:12, renta:'5,8%', min:'USDC 250', min0:250,
+   series:[93.1,94.0,94.6,95.2,96.0,96.4,97.1,97.9,98.4,99.0,99.6,100.0]},
+  {kind:'INMUEBLE', tag:'CESIÓN FIDUCIARIA · CNV', name:'Edificio Nueva Córdoba', base:104.20, open:100.00, pct:35, renta:'7,4%', min:'USDC 500', min0:500,
+   series:[96.4,97.2,98.1,98.6,99.4,100.2,101.0,101.7,102.4,103.1,103.7,104.2]},
+  {kind:'CRÉDITOS', tag:'CESIÓN FIDUCIARIA', name:'Cartera Agro Río Cuarto', base:96.40, open:100.00, pct:61, renta:'9,1%', min:'USDC 100', min0:100,
+   series:[101.2,100.7,100.1,99.6,99.0,98.6,98.1,97.7,97.2,96.9,96.6,96.4]},
+];
+const HOLD = [3600, 1200, 2400];
+const PAGOS = ['15 OCT 2026','01 OCT 2026','28 SEP 2026'];
+
+function n2(v){
+  const s = Math.abs(v).toFixed(2).split('.');
+  const int = s[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return (v < 0 ? '-' : '') + int + ',' + s[1];
+}
+function n0(v){ return Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+
+class Component extends DCLogic {
+  state = {
+    view: 'mercado', sel: 1, qty: 25, done: false, tx: '',
+    prices: TRUSTS.map(t => t.base),
+    tkRaw: 1200000, tkKind: 'INMUEBLE',
+    aprobados: TRUSTS.map(() => false),
+  };
+
+  componentDidMount(){
+    this.iv = setInterval(() => {
+      this.setState(s => ({
+        prices: s.prices.map((p, i) => {
+          const drift = (Math.random() - 0.48) * 0.22;
+          const next = p + drift;
+          const lo = TRUSTS[i].base * 0.97, hi = TRUSTS[i].base * 1.03;
+          return Math.min(hi, Math.max(lo, next));
+        })
+      }));
+    }, 1900);
+  }
+  componentWillUnmount(){ clearInterval(this.iv); }
+
+  tabStyle(active){
+    return {display:'flex',alignItems:'center',padding:'0 18px',borderRight:'1px solid #2A2A26',fontSize:'12px',letterSpacing:'.16em',cursor:'pointer',fontWeight:active?600:400,
+      background:active?'#15150F':'transparent',color:active?'#E8E000':'#7C7A70'};
+  }
+
+  trust(i){
+    const t = TRUSTS[i], p = this.state.prices[i], d = p - t.open;
+    return {
+      num: '0' + (i + 1), kind: t.kind, tag: t.tag, name: t.name, pct: t.pct, min: t.min, renta: t.renta,
+      price: n2(p), raw: p,
+      delta: (d >= 0 ? '▲ ' : '▼ ') + n2(Math.abs(d)),
+      deltaStyle: {color: d >= 0 ? '#8FD14F' : '#FF4A1E'},
+    };
+  }
+
+  renderVals(){
+    const s = this.state, i = s.sel, t = TRUSTS[i];
+    const feat = this.trust(i);
+    const series = t.series.slice(0, 11).concat([s.prices[i]]);
+    const lo = Math.min.apply(null, series), hi = Math.max.apply(null, series);
+
+    const fdRows = TRUSTS.map((x, k) => {
+      const ok = s.aprobados[k];
+      return {
+        num: '0' + (k + 1), tipo: 'ALTA DE FIDUCIANTE', name: x.name,
+        cuit: 'CUIT 30-714582' + (k + 10) + '-4',
+        estado: ok ? 'APROBADO' : 'DOCUMENTACIÓN COMPLETA',
+        estadoColor: ok ? '#8FD14F' : '#7C7A70',
+        btnLabel: ok ? 'FIRMADO' : 'APROBAR',
+        act: () => this.setState(st => { const a = st.aprobados.slice(); a[k] = true; return {aprobados: a}; }),
+        btn: {height:'44px',display:'grid',placeItems:'center',fontSize:'12px',fontWeight:600,letterSpacing:'.16em',cursor: ok ? 'default' : 'pointer',
+          background: ok ? 'transparent' : '#E8E000', color: ok ? '#8FD14F' : '#0B0B0A', border: ok ? '1px solid #2A2A26' : 'none'},
+      };
+    });
+
+    return {
+      isMercado: s.view === 'mercado', isPortafolio: s.view === 'portafolio',
+      isTokenizar: s.view === 'tokenizar', isPanel: s.view === 'panel',
+      tab: {mercado: this.tabStyle(s.view==='mercado'), portafolio: this.tabStyle(s.view==='portafolio'),
+            tokenizar: this.tabStyle(s.view==='tokenizar'), panel: this.tabStyle(s.view==='panel')},
+      goMercado: () => this.setState({view:'mercado'}), goPortafolio: () => this.setState({view:'portafolio'}),
+      goTokenizar: () => this.setState({view:'tokenizar'}), goPanel: () => this.setState({view:'panel'}),
+
+      tape: TRUSTS.map((x, k) => {
+        const tr = this.trust(k);
+        return {text: x.name.toUpperCase() + '  ' + tr.price + '  ' + tr.delta};
+      }).concat([{text:'USDC/ARS 1.412'}, {text:'RENTA REPARTIDA USDC 175.500'}]),
+
+      feat: Object.assign(feat, {
+        low: n2(lo), high: n2(hi),
+        barStyle: {height:'100%', width: t.pct + '%', background:'#E8E000'},
+      }),
+      bars: series.map((v, k) => ({
+        style: {width:'100%', height: Math.round(14 + ((v - lo) / ((hi - lo) || 1)) * 88) + 'px',
+          background: k === 11 ? '#E8E000' : '#3A3A34'},
+      })),
+      others: TRUSTS.map((x, k) => k).filter(k => k !== i).map(k => {
+        const o = this.trust(k);
+        return Object.assign(o, {
+          select: () => this.setState({sel: k, done: false, qty: 25}),
+          card: {padding:'24px 30px',flex:1,borderBottom:'1px solid #2A2A26',cursor:'pointer'},
+          barStyle: {height:'100%', width: TRUSTS[k].pct + '%', background:'#EDEAE0'},
+        });
+      }),
+
+      qty: s.qty, buying: !s.done, done: s.done, tx: s.tx,
+      total: n2(s.qty * s.prices[i]),
+      inc: () => this.setState(st => ({qty: st.qty + 5})),
+      dec: () => this.setState(st => ({qty: Math.max(1, st.qty - 5)})),
+      onQty: (e) => {
+        const v = parseInt(String(e.target.value).replace(/\D/g, ''), 10);
+        this.setState({qty: isNaN(v) ? 0 : Math.min(99999, v)});
+      },
+      confirm: () => this.setState({done: true, tx: '0x' + Math.random().toString(16).slice(2, 6) + '…' + Math.random().toString(16).slice(2, 6)}),
+      reset: () => this.setState({done: false, qty: 25}),
+
+      pf: {
+        total: n0(HOLD.reduce((a, q, k) => a + q * s.prices[k], 0)),
+        renta: n0(8900),
+        pnl: (pnl => (pnl >= 0 ? '+ ' : '− ') + n0(Math.abs(pnl)))(HOLD.reduce((a, q, k) => a + q * (s.prices[k] - TRUSTS[k].open), 0)),
+        pnlColor: HOLD.reduce((a, q, k) => a + q * (s.prices[k] - TRUSTS[k].open), 0) >= 0 ? '#8FD14F' : '#FF4A1E',
+        rows: TRUSTS.map((x, k) => ({
+          num: '0' + (k + 1), kind: x.kind, name: x.name, qty: n0(HOLD[k]),
+          value: n0(HOLD[k] * s.prices[k]), pago: PAGOS[k],
+        })),
+      },
+
+      tk: {
+        raw: s.tkRaw, monto: n0(s.tkRaw), certs: n0(s.tkRaw / 100), kind: s.tkKind,
+        fee: 'USDC ' + n0(s.tkRaw * 0.012),
+        onMonto: (e) => this.setState({tkRaw: parseInt(e.target.value, 10)}),
+        kinds: ['CAMPO','INMUEBLE','CRÉDITOS'].map(lbl => ({
+          label: lbl, pick: () => this.setState({tkKind: lbl}),
+          style: {padding:'12px 18px',fontSize:'12px',letterSpacing:'.16em',cursor:'pointer',
+            border: s.tkKind === lbl ? '1px solid #E8E000' : '1px solid #3A3A34',
+            background: s.tkKind === lbl ? '#E8E000' : 'transparent',
+            color: s.tkKind === lbl ? '#0B0B0A' : '#7C7A70', fontWeight: s.tkKind === lbl ? 600 : 400},
+        })),
+      },
+
+      fd: {rows: fdRows, pendientes: '0' + fdRows.filter(r => r.btnLabel === 'APROBAR').length, aprobados: '1' + (2 + s.aprobados.filter(Boolean).length)},
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#0B0B0A;color:#EDEAE0;font-family:'IBM Plex Mono',ui-monospace,monospace;-webkit-font-smoothing:antialiased}
+    a{color:#E8E000;text-decoration:none}
+    a:hover{color:#EDEAE0}
+    @keyframes tape{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    @keyframes blip{0%,55%{opacity:1}56%,100%{opacity:.15}}
+  </style>
+</helmet>
+
+<div style="min-height:940px;background:#0B0B0A;display:flex;flex-direction:column;overflow:hidden">
+
+  <div style="background:#E8E000;color:#0B0B0A;height:38px;display:flex;align-items:center;overflow:hidden;flex:0 0 38px">
+    <div style="display:flex;white-space:nowrap;animation:tape 34s linear infinite;font-size:13px;font-weight:600;letter-spacing:.1em">
+      <span style="padding-right:40px">CAMPO LA ESPERANZA 100,00 ▲ 0,00</span><span style="padding-right:40px">EDIFICIO NUEVA CÓRDOBA 104,20 ▲ 4,20</span><span style="padding-right:40px">CARTERA AGRO RÍO CUARTO 96,40 ▼ 3,60</span><span style="padding-right:40px">USDC/ARS 1.412</span><span style="padding-right:40px">RENTA REPARTIDA USDC 175.500</span>
+      <span style="padding-right:40px">CAMPO LA ESPERANZA 100,00 ▲ 0,00</span><span style="padding-right:40px">EDIFICIO NUEVA CÓRDOBA 104,20 ▲ 4,20</span><span style="padding-right:40px">CARTERA AGRO RÍO CUARTO 96,40 ▼ 3,60</span><span style="padding-right:40px">USDC/ARS 1.412</span><span style="padding-right:40px">RENTA REPARTIDA USDC 175.500</span>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:stretch;border-bottom:1px solid #2A2A26;min-height:52px">
+    <div style="display:flex;align-items:center;gap:10px;padding:0 20px;border-right:1px solid #2A2A26">
+      <span style="width:12px;height:12px;background:#E8E000;display:block"></span>
+      <span style="font-family:'Archivo Black',sans-serif;font-size:17px;letter-spacing:-.01em">FIDETOK</span>
+    </div>
+    <div style="display:flex;align-items:stretch">
+      <a href="#" style="display:flex;align-items:center;padding:0 18px;border-right:1px solid #2A2A26;font-size:12px;font-weight:600;letter-spacing:.16em;color:#E8E000;background:#15150F">MERCADO</a>
+      <a href="#" style="display:flex;align-items:center;padding:0 18px;border-right:1px solid #2A2A26;font-size:12px;letter-spacing:.16em;color:#7C7A70" style-hover="color:#EDEAE0">PORTAFOLIO</a>
+      <a href="#" style="display:flex;align-items:center;padding:0 18px;border-right:1px solid #2A2A26;font-size:12px;letter-spacing:.16em;color:#7C7A70" style-hover="color:#EDEAE0">TOKENIZAR</a>
+      <a href="#" style="display:flex;align-items:center;padding:0 18px;border-right:1px solid #2A2A26;font-size:12px;letter-spacing:.16em;color:#7C7A70" style-hover="color:#EDEAE0">VERIFICAR</a>
+    </div>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:14px;padding:0 20px;border-left:1px solid #2A2A26;font-size:12px;letter-spacing:.08em;color:#7C7A70">
+      <span style="display:flex;align-items:center;gap:7px;color:#EDEAE0"><span style="width:8px;height:8px;background:#E8E000;display:block;animation:blip 1.4s steps(1) infinite"></span>EN VIVO</span>
+      <span>7xKX…9Pq2</span>
+      <span>KYC OK</span>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);border-bottom:1px solid #2A2A26">
+
+    <div style="padding:34px 34px 30px;border-right:1px solid #2A2A26;position:relative;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <span style="background:#E8E000;color:#0B0B0A;font-size:11.5px;font-weight:600;letter-spacing:.18em;padding:5px 10px">DESTACADO 02</span>
+        <span style="font-size:11.5px;letter-spacing:.18em;color:#7C7A70">INMUEBLE · CESIÓN FIDUCIARIA · CNV</span>
+      </div>
+      <div style="font-family:'Archivo Black',sans-serif;font-size:104px;line-height:.92;letter-spacing:-.04em;margin-top:26px;text-transform:uppercase">Edificio<br>Nueva<br>Córdoba</div>
+      <div style="display:flex;align-items:flex-end;gap:28px;margin-top:34px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">USDC · CUOTAPARTE</div>
+          <div style="font-family:'Archivo Black',sans-serif;font-size:132px;line-height:.82;letter-spacing:-.05em;color:#E8E000;font-variant-numeric:tabular-nums;margin-top:8px">104,20</div>
+        </div>
+        <div style="padding-bottom:12px">
+          <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">RENTA ANUAL</div>
+          <div style="font-family:'Archivo Black',sans-serif;font-size:52px;line-height:1;letter-spacing:-.03em;margin-top:8px">7,4%</div>
+        </div>
+      </div>
+      <div style="margin-top:30px">
+        <div style="height:18px;border:1px solid #EDEAE0;background:repeating-linear-gradient(135deg,#1A1A16 0 6px,#0B0B0A 6px 12px)">
+          <div style="height:100%;width:35%;background:#E8E000"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;gap:16px;margin-top:10px;font-size:12px;letter-spacing:.14em">
+          <span>35% SUSCRIPTO</span>
+          <span style="color:#7C7A70">MÍNIMO USDC 500</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column">
+      <div style="padding:26px 30px;border-bottom:1px solid #2A2A26;flex:1" style-hover="background:#15150F">
+        <div style="display:flex;justify-content:space-between;gap:14px;font-size:11.5px;letter-spacing:.18em;color:#7C7A70"><span>01 · CAMPO</span><span>LEY 26.737</span></div>
+        <div style="font-family:'Archivo Black',sans-serif;font-size:30px;line-height:1.05;letter-spacing:-.02em;margin-top:12px;text-transform:uppercase">Campo La Esperanza</div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-top:20px">
+          <div style="font-family:'Archivo Black',sans-serif;font-size:76px;line-height:.85;letter-spacing:-.04em;font-variant-numeric:tabular-nums">100,00</div>
+          <div style="text-align:right;font-size:12px;letter-spacing:.12em;color:#7C7A70;padding-bottom:6px">12%<br>SUSCRIPTO</div>
+        </div>
+        <div style="height:10px;border:1px solid #3A3A34;margin-top:18px"><div style="height:100%;width:12%;background:#EDEAE0"></div></div>
+      </div>
+      <div style="padding:26px 30px;flex:1" style-hover="background:#15150F">
+        <div style="display:flex;justify-content:space-between;gap:14px;font-size:11.5px;letter-spacing:.18em;color:#7C7A70"><span>03 · CRÉDITOS</span><span style="color:#FF4A1E">▼ 3,60</span></div>
+        <div style="font-family:'Archivo Black',sans-serif;font-size:30px;line-height:1.05;letter-spacing:-.02em;margin-top:12px;text-transform:uppercase">Cartera Agro Río Cuarto</div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-top:20px">
+          <div style="font-family:'Archivo Black',sans-serif;font-size:76px;line-height:.85;letter-spacing:-.04em;font-variant-numeric:tabular-nums">96,40</div>
+          <div style="text-align:right;font-size:12px;letter-spacing:.12em;color:#7C7A70;padding-bottom:6px">61%<br>SUSCRIPTO</div>
+        </div>
+        <div style="height:10px;border:1px solid #3A3A34;margin-top:18px"><div style="height:100%;width:61%;background:#EDEAE0"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <sc-if value="{{ showTotals }}" hint-placeholder-val="{{ true }}">
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid #2A2A26">
+      <div style="padding:24px 34px">
+        <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">TOKENIZADO</div>
+        <div style="font-family:'Archivo Black',sans-serif;font-size:56px;line-height:1;letter-spacing:-.035em;margin-top:8px;font-variant-numeric:tabular-nums">USD 2,48M</div>
+      </div>
+      <div style="padding:24px 34px;border-left:1px solid #2A2A26">
+        <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">INVERSORES HABILITADOS</div>
+        <div style="font-family:'Archivo Black',sans-serif;font-size:56px;line-height:1;letter-spacing:-.035em;margin-top:8px;font-variant-numeric:tabular-nums">1.240</div>
+      </div>
+      <div style="padding:24px 34px;border-left:1px solid #2A2A26">
+        <div style="font-size:11px;letter-spacing:.2em;color:#7C7A70">RENTA REPARTIDA</div>
+        <div style="font-family:'Archivo Black',sans-serif;font-size:56px;line-height:1;letter-spacing:-.035em;margin-top:8px;font-variant-numeric:tabular-nums;color:#E8E000">USDC 175.500</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <div style="margin-top:auto;height:22px;background:repeating-linear-gradient(135deg,#E8E000 0 14px,#0B0B0A 14px 28px);flex:0 0 22px"></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showTotals&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return { showTotals: this.props.showTotals ?? true };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+{
+  "pages": [
+    { "id": "page-1", "name": "Tres direcciones" },
+    { "id": "page-2", "name": "La B, más a fondo" }
+  ],
+  "artboards": [
+    { "file": "Main.dc.html", "title": "Opción B · Vitrina", "x": 0, "y": 0, "w": 1440, "h": 940, "page": "page-1" },
+    { "file": "OpcionA.dc.html", "title": "Opción A · Papel", "x": 1560, "y": 0, "w": 1440, "h": 940, "page": "page-1" },
+    { "file": "OpcionC.dc.html", "title": "Opción C · Tablero", "x": 3120, "y": 0, "w": 1440, "h": 940, "page": "page-1" },
+    { "file": "Adquirir.dc.html", "title": "Adquirir certificados — en la B", "x": 0, "y": 0, "w": 1440, "h": 980, "page": "page-2", "is_interactive": true }
+  ],
+  "annotations": [
+    {
+      "id": "op-b",
+      "page": "page-1",
+      "x": 0,
+      "y": -250,
+      "w": 540,
+      "text": "OPCIÓN B · VITRINA\n\nCada fideicomiso es un bloque de color con un solo número enorme. El destacado va al centro y más alto.\n\nA favor: se lee desde el fondo de la sala y no hay dónde perderse. Es la que mejor aguanta que vos hablés encima.\n\nEn contra: es la que menos datos muestra. Si te preguntan por spread o valuación, hay que entrar al detalle."
+    },
+    {
+      "id": "op-a",
+      "page": "page-1",
+      "x": 1560,
+      "y": -250,
+      "w": 540,
+      "text": "OPCIÓN A · PAPEL\n\nUn registro, no una app: filas numeradas, filetes finos, todo el peso en la tipografía. Casi sin color.\n\nA favor: comunica que esto es un instrumento legal y no una cripto más. Escala sin despeinarse a veinte fideicomisos.\n\nEn contra: es la menos llamativa en proyección. Si el jurado mira dos segundos, ve texto."
+    },
+    {
+      "id": "op-c",
+      "page": "page-1",
+      "x": 3120,
+      "y": -250,
+      "w": 540,
+      "text": "OPCIÓN C · TABLERO\n\nTarjetas blancas con la evolución del valor cuotaparte a doce meses, en la misma escala para las tres.\n\nA favor: la única que muestra que el NAV se mueve. Es la que más se parece a un producto financiero de verdad.\n\nEn contra: es la que más elementos mete por pantalla, justo lo que pediste bajar."
+    },
+    {
+      "id": "nota-adquirir",
+      "page": "page-2",
+      "x": 0,
+      "y": -200,
+      "w": 620,
+      "text": "Así se ve la segunda pantalla si elegimos la B. Los controles andan: cambiá la cantidad y el total se recalcula, y el toggle pasa de suscripción primaria a pool secundario.\n\nToda la parte legal quedó en una sola fila abajo — CUIT, matrícula y hash — en vez de dos tarjetas de texto."
+    }
+  ],
+  "launch": { "view": "canvas", "page": "page-1" }
+}

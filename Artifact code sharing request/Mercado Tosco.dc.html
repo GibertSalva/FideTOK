@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#CFCCC3;color:#141412;font-family:'Archivo',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+    a{color:#141412;text-decoration:none}
+    a:hover{color:#DC4715}
+  </style>
+</helmet>
+
+<div style="min-height:940px;background:#CFCCC3;display:flex;flex-direction:column">
+
+  <div style="background:#141412;color:#CFCCC3;display:flex;align-items:stretch;min-height:56px">
+    <div style="display:flex;align-items:center;gap:10px;padding:0 22px;border-right:1px solid #35332C">
+      <span style="width:14px;height:14px;background:#DC4715;display:block"></span>
+      <span style="font-size:19px;font-weight:800;letter-spacing:-.02em;text-transform:uppercase">FideTOK</span>
+    </div>
+    <div style="display:flex;align-items:stretch">
+      <a href="#" style="display:flex;align-items:center;padding:0 20px;background:#DC4715;color:#141412;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase">Mercado</a>
+      <a href="#" style="display:flex;align-items:center;padding:0 20px;border-right:1px solid #35332C;border-left:1px solid #35332C;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8F8B7F" style-hover="color:#CFCCC3">Portafolio</a>
+      <a href="#" style="display:flex;align-items:center;padding:0 20px;border-right:1px solid #35332C;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8F8B7F" style-hover="color:#CFCCC3">Tokenizar</a>
+      <a href="#" style="display:flex;align-items:center;padding:0 20px;border-right:1px solid #35332C;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8F8B7F" style-hover="color:#CFCCC3">Verificar</a>
+      <a href="#" style="display:flex;align-items:center;padding:0 20px;border-right:1px solid #35332C;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8F8B7F" style-hover="color:#CFCCC3">Panel</a>
+    </div>
+    <sc-if value="{{ showWallet }}" hint-placeholder-val="{{ true }}">
+      <div style="margin-left:auto;display:flex;align-items:center;gap:12px;padding:0 22px;border-left:1px solid #35332C;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.04em">
+        <span style="width:8px;height:8px;background:#4E9A67;display:block"></span>
+        <span>7xKX…9Pq2</span>
+        <span style="color:#8F8B7F">KYC APROBADO</span>
+      </div>
+    </sc-if>
+  </div>
+
+  <div style="padding:44px 40px 0;display:flex;align-items:flex-end;justify-content:space-between;gap:40px;flex-wrap:wrap">
+    <h1 style="margin:0;font-size:132px;font-weight:800;letter-spacing:-.05em;line-height:.8;text-transform:uppercase">Mercado</h1>
+    <p style="margin:0 0 8px;max-width:300px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.6;letter-spacing:.02em;text-transform:uppercase;color:#4A473F">Certificados que solo circulan entre inversores verificados. Oferta privada · CNV.</p>
+  </div>
+
+  <sc-if value="{{ showTotals }}" hint-placeholder-val="{{ true }}">
+    <div style="margin:36px 40px 0;border-top:2px solid #141412;border-bottom:1px solid #141412;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))">
+      <div style="padding:20px 24px 18px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#4A473F">Tokenizado</div>
+        <div style="font-size:58px;font-weight:700;letter-spacing:-.035em;line-height:1;margin-top:6px;font-variant-numeric:tabular-nums">USD 2,48 M</div>
+      </div>
+      <div style="padding:20px 24px 18px;border-left:1px solid #141412">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#4A473F">Inversores habilitados</div>
+        <div style="font-size:58px;font-weight:700;letter-spacing:-.035em;line-height:1;margin-top:6px;font-variant-numeric:tabular-nums">1.240</div>
+      </div>
+      <div style="padding:20px 24px 18px;border-left:1px solid #141412">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#4A473F">Renta repartida</div>
+        <div style="font-size:58px;font-weight:700;letter-spacing:-.035em;line-height:1;margin-top:6px;font-variant-numeric:tabular-nums">USDC 175.500</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <div style="margin:34px 40px 0;display:grid;grid-template-columns:1fr;border-top:1px solid #141412">
+
+    <div style="display:grid;grid-template-columns:52px minmax(0,1fr) 220px 240px;align-items:center;gap:24px;padding:24px 20px;border-bottom:1px solid #141412" style-hover="background:#C4C1B7">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;letter-spacing:.06em">01</div>
+      <div style="min-width:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#DC4715">Campo</div>
+        <div style="font-size:38px;font-weight:600;letter-spacing:-.03em;line-height:1.05;margin-top:4px">Campo La Esperanza</div>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#4A473F">USDC · cuotaparte</div>
+        <div style="font-size:62px;font-weight:700;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums">100,00</div>
+      </div>
+      <div>
+        <div style="height:14px;background:repeating-linear-gradient(90deg,#141412 0 2px,transparent 2px 6px);border:1px solid #141412">
+          <div style="height:100%;width:12%;background:#141412"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;gap:12px;margin-top:9px;font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase">
+          <span>12% suscripto</span>
+          <span style="color:#4A473F">Ley 26.737</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:52px minmax(0,1fr) 220px 240px;align-items:center;gap:24px;padding:30px 20px;border-bottom:1px solid #141412;background:#141412;color:#E4E1D8">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;letter-spacing:.06em;color:#DC4715">02</div>
+      <div style="min-width:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#DC4715">Inmueble · renta 7,4%</div>
+        <div style="font-size:44px;font-weight:600;letter-spacing:-.03em;line-height:1.05;margin-top:4px">Edificio Nueva Córdoba</div>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#8F8B7F">USDC · cuotaparte</div>
+        <div style="font-size:74px;font-weight:700;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums;color:#DC4715">104,20</div>
+      </div>
+      <div>
+        <div style="height:14px;background:repeating-linear-gradient(90deg,#E4E1D8 0 2px,transparent 2px 6px);border:1px solid #E4E1D8">
+          <div style="height:100%;width:35%;background:#DC4715"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;gap:12px;margin-top:9px;font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase">
+          <span>35% suscripto</span>
+          <span style="color:#8F8B7F">Renta 7,4%</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:52px minmax(0,1fr) 220px 240px;align-items:center;gap:24px;padding:24px 20px;border-bottom:2px solid #141412" style-hover="background:#C4C1B7">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;letter-spacing:.06em">03</div>
+      <div style="min-width:0">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#DC4715">Créditos</div>
+        <div style="font-size:38px;font-weight:600;letter-spacing:-.03em;line-height:1.05;margin-top:4px">Cartera Agro Río Cuarto</div>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#4A473F">USDC · cuotaparte</div>
+        <div style="font-size:62px;font-weight:700;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums">96,40</div>
+      </div>
+      <div>
+        <div style="height:14px;background:repeating-linear-gradient(90deg,#141412 0 2px,transparent 2px 6px);border:1px solid #141412">
+          <div style="height:100%;width:61%;background:#141412"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;gap:12px;margin-top:9px;font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase">
+          <span>61% suscripto</span>
+          <span style="color:#4A473F">Cesión fiduciaria</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <sc-if value="{{ showLegal }}" hint-placeholder-val="{{ true }}">
+    <div style="margin:auto 40px 0;padding:16px 20px 34px;display:flex;flex-wrap:wrap;gap:8px 32px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#4A473F">
+      <span>Fiduciario: CUIT 30-71458209-4</span>
+      <span>Matrícula CNV 1.234</span>
+      <span>Hash contrato 0x7a3f…b91c</span>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showTotals&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;showWallet&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;showLegal&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      showTotals: this.props.showTotals ?? true,
+      showWallet: this.props.showWallet ?? true,
+      showLegal: this.props.showLegal ?? true,
+    };
+  }
+}
+</script>
+</body>
+</html>
